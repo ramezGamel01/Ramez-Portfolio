@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-page="contact" data-motion="off" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="meta.title.contact">Contact — Ramez Gamel</title>
+  <meta name="description" content="Get in touch with Ramez Gamel about a website, a web app, a front-end role or AI data work.">
+  <meta name="theme-color" content="#0c0c0d">
+  <link rel="canonical" href="https://ramezgamel01.github.io/contact.html">
+  <meta property="og:url" content="https://ramezgamel01.github.io/contact.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Ramez Gamel">
+  <meta property="og:title" content="Contact — Ramez Gamel">
+  <meta property="og:description" content="Get in touch with Ramez Gamel about a website, a web app, a front-end role or AI data work.">
+  <meta property="og:image" content="https://ramezgamel01.github.io/assets/og/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23f2f1ee'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' fill='%230c0c0d' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@700&family=IBM+Plex+Sans+Arabic:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400..600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    // Settle motion, theme, language and the loader before first paint
+    (function () {
+      var d = document.documentElement;
+      try {
+        var s = localStorage;
+        var m = s.getItem("motion");
+        d.dataset.motion = (m ? m === "on" : !matchMedia("(prefers-reduced-motion: reduce)").matches) ? "on" : "off";
+        if (s.getItem("theme") === "light") d.dataset.theme = "light";
+        if (s.getItem("lang") === "ar") { d.lang = "ar"; d.dir = "rtl"; d.classList.add("i18n-pending"); }
+        if (!sessionStorage.getItem("visited")) {
+          d.classList.add("loading");
+          sessionStorage.setItem("visited", "1");
+        }
+      } catch (e) {}
+      addEventListener("pagereveal", function (e) {
+        if (!e.viewTransition) return;
+        e.viewTransition.ready.catch(function () {});
+        e.viewTransition.finished.catch(function () {});
+        if (d.dataset.motion !== "on") e.viewTransition.skipTransition();
+      });
+    })();
+  </script>
+  <script type="speculationrules">{"prefetch": [{"where": {"href_matches": "/*.html"}, "eagerness": "moderate"}]}</script>
+</head>
+<body>
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M8.5 7H17v8.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <div class="loader" data-loader>
+    <span class="loader-glow" aria-hidden="true"></span>
+    <span class="loader-cord" aria-hidden="true"><span class="loader-cord-line"></span><span class="loader-cord-knob"></span></span>
+    <svg class="loader-name" viewBox="0 0 900 420" aria-hidden="true"><text x="450" y="300" text-anchor="middle">رامز</text></svg>
+    <div class="loader-meta">
+      <p class="loader-count"><span data-loader-count>0</span><span class="loader-pct">%</span></p>
+      <p class="loader-label" data-i18n="loader.label">Turning the lights on</p>
+    </div>
+    <span class="loader-bar" aria-hidden="true"></span>
+    <button class="loader-skip" type="button" data-loader-skip data-i18n="loader.skip">Skip</button>
+  </div>
+
+  <div class="cursor-light" aria-hidden="true"></div>
+
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+
+  <header class="site-header" data-header>
+    <div class="container nav">
+      <a class="brand" href="./" aria-label="Ramez Gamel, home" data-i18n-attr="aria-label:brand.label">
+        <span class="brand-mark" aria-hidden="true">R</span>
+        <span class="brand-name">Ramez Gamel</span>
+      </a>
+      <div class="nav-actions">
+        <button class="lang-btn" type="button" data-lang-toggle aria-label="Switch to Arabic"><span data-lang-label lang="ar">عربي</span></button>
+        <a class="btn btn-primary btn-sm nav-email" href="mailto:ramgamel06@gmail.com" data-i18n="nav.email">Email me</a>
+        <button class="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+          <span></span><span></span>
+        </button>
+      </div>
+      <button class="cord" type="button" data-cord aria-label="Turn the lights on">
+        <span class="cord-line" aria-hidden="true"></span>
+        <span class="cord-knob" aria-hidden="true"></span>
+        <span class="cord-hint" aria-hidden="true" data-i18n="cord.hint">Pull</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="menu" id="menu">
+    <div class="container menu-inner">
+      <nav class="menu-links" aria-label="Main" data-i18n-attr="aria-label:nav.main">
+        <a href="./" data-preview="home"><span class="menu-link-text" data-i18n="nav.home">Home</span></a>
+        <a href="work.html" data-preview="work"><span class="menu-link-text" data-i18n="nav.work">Work</span></a>
+        <a href="about.html" data-preview="about"><span class="menu-link-text" data-i18n="nav.about">About</span></a>
+        <a href="contact.html" aria-current="page" data-preview="contact"><span class="menu-link-text" data-i18n="nav.contact">Contact</span></a>
+      </nav>
+      <div class="menu-side">
+        <div class="menu-preview" aria-hidden="true" data-menu-preview>
+          <div class="preview preview-photo" data-preview-pane="home"><img src="assets/portrait-cutout.png" alt="" width="460" height="460" loading="lazy"></div>
+          <div class="preview preview-shot" data-preview-pane="work"><img src="assets/work/workledger-full.jpg" alt="" width="900" height="1935" loading="lazy"></div>
+          <div class="preview preview-name" data-preview-pane="about"><span lang="ar">رامز</span></div>
+          <div class="preview preview-clock" data-preview-pane="contact"><span data-preview-time>Cairo</span><small data-i18n="menu.city">Egypt</small></div>
+        </div>
+        <dl class="menu-info">
+          <div><dt data-i18n="menu.email">Email</dt><dd><a href="mailto:ramgamel06@gmail.com">ramgamel06@gmail.com</a></dd></div>
+          <div><dt data-i18n="menu.github">GitHub</dt><dd><a href="https://github.com/ramezGamel01">@ramezGamel01</a></dd></div>
+          <div><dt data-i18n="menu.linkedin">LinkedIn</dt><dd><a href="https://www.linkedin.com/in/ramez-gamel-002755238">ramez-gamel</a></dd></div>
+          <div><dt data-i18n="menu.based">Based in</dt><dd data-i18n="menu.city">Egypt</dd></div>
+        </dl>
+        <div class="menu-settings">
+          <button class="setting" type="button" aria-pressed="false" data-theme-toggle>
+            <span class="switch" aria-hidden="true"></span>
+            <span data-i18n="set.lights">Lights</span>
+            <span class="setting-state" data-theme-state>Off</span>
+          </button>
+          <button class="setting" type="button" aria-pressed="false" data-motion-toggle>
+            <span class="switch" aria-hidden="true"></span>
+            <span data-i18n="set.motion">Animations</span>
+            <span class="setting-state" data-motion-state>Off</span>
+          </button>
+          <button class="setting" type="button" data-lang-toggle aria-label="Switch to Arabic">
+            <span class="lang-chip" data-lang-label lang="ar">عربي</span>
+            <span data-i18n="set.language">Language</span>
+          </button>
+          <button class="setting" type="button" aria-pressed="false" data-sound-toggle>
+            <span class="switch" aria-hidden="true"></span>
+            <span data-i18n="set.sound">Sound</span>
+            <span class="setting-state" data-sound-state>Off</span>
+          </button>
+          <button class="setting" type="button" data-palette-open>
+            <span class="kbd-pair" aria-hidden="true"><kbd>Ctrl</kbd><kbd>K</kbd></span>
+            <span data-i18n="set.palette">Command menu</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main id="main">
+    <section class="page-hero" id="top">
+      <div class="container contact-intro">
+        <h1 class="display" data-reveal="lines">
+          <span class="line"><span data-i18n="contact.title1">Have something to build?</span></span>
+          <span class="line muted"><span data-i18n="contact.title2">Let's talk it through.</span></span>
+        </h1>
+        <div class="contact-aside" data-reveal style="--d:2">
+          <p class="page-lead" data-i18n="contact.lead">Send a short note about your project or the role, and when you need it. I'll reply with the questions I need answered and a clear next step.</p>
+          <p class="clock" data-clock><span class="clock-dot" aria-hidden="true"></span><span data-clock-text>Cairo</span></p>
+          <p class="overlap" data-overlap hidden></p>
+        </div>
+        <a class="big-email" href="mailto:ramgamel06@gmail.com" data-reveal style="--d:3">
+          <span>ramgamel06@gmail.com</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </a>
+      </div>
+      <a class="scroll-cue" href="#write"><span class="scroll-line" aria-hidden="true"></span><span data-i18n="scroll">Scroll</span></a>
+    </section>
+
+    <section class="section-tight" id="write" aria-labelledby="form-title">
+      <div class="container contact-wrap">
+        <div class="contact-card" data-rise>
+          <form class="composer" data-composer novalidate>
+            <h2 class="composer-title" id="form-title" data-i18n="form.title">Write your message</h2>
+
+            <fieldset class="chips">
+              <legend data-i18n="form.need">What do you need?</legend>
+              <label><input type="radio" name="need" value="need.site"><span data-i18n="need.site">A website</span></label>
+              <label><input type="radio" name="need" value="need.app"><span data-i18n="need.app">A web app</span></label>
+              <label><input type="radio" name="need" value="need.hire"><span data-i18n="need.hire">A full-time hire</span></label>
+              <label><input type="radio" name="need" value="need.ml"><span data-i18n="need.ml">Machine learning work</span></label>
+              <label><input type="radio" name="need" value="need.ai"><span data-i18n="need.ai">AI data work</span></label>
+            </fieldset>
+
+            <fieldset class="chips">
+              <legend data-i18n="form.when">When do you need it?</legend>
+              <label><input type="radio" name="when" value="when.now"><span data-i18n="when.now">This month</span></label>
+              <label><input type="radio" name="when" value="when.soon"><span data-i18n="when.soon">In 1–3 months</span></label>
+              <label><input type="radio" name="when" value="when.flex"><span data-i18n="when.flex">No rush</span></label>
+            </fieldset>
+
+            <label class="field">
+              <span data-i18n="form.name">Your name</span>
+              <input type="text" name="name" autocomplete="name">
+            </label>
+
+            <label class="field">
+              <span data-i18n="form.message">Tell me about it</span>
+              <textarea name="message" rows="5" placeholder="A few lines about the project or role" data-i18n-attr="placeholder:form.placeholder" aria-describedby="form-error"></textarea>
+            </label>
+
+            <p class="composer-error" id="form-error" data-composer-error hidden data-i18n="form.error">Write a few words about what you need.</p>
+
+            <div class="composer-send">
+              <button class="btn btn-dark" type="submit" data-i18n="form.send">Open in my email app</button>
+              <p class="composer-note" data-i18n="form.note">Your email app opens with the message filled in. Nothing is sent until you press send there.</p>
+            </div>
+          </form>
+
+          <dl class="contact-list">
+            <div>
+              <dt data-i18n="list.email">Email</dt>
+              <dd>
+                <a href="mailto:ramgamel06@gmail.com">ramgamel06@gmail.com</a>
+                <button class="copy-btn" type="button" data-copy="ramgamel06@gmail.com" data-i18n="copy">Copy</button>
+                <a href="mailto:ramizz.gamil@gmail.com">ramizz.gamil@gmail.com</a>
+              </dd>
+            </div>
+            <div>
+              <dt data-i18n="list.phone">Phone</dt>
+              <dd><a href="tel:+201095549690" dir="ltr">+20 109 554 9690</a></dd>
+            </div>
+            <div>
+              <dt data-i18n="list.linkedin">LinkedIn</dt>
+              <dd><a href="https://www.linkedin.com/in/ramez-gamel-002755238">ramez-gamel</a></dd>
+            </div>
+            <div>
+              <dt data-i18n="list.github">GitHub</dt>
+              <dd><a href="https://github.com/ramezGamel01">@ramezGamel01</a></dd>
+            </div>
+            <div>
+              <dt data-i18n="list.based">Based in</dt>
+              <dd data-i18n="menu.city">Egypt</dd>
+            </div>
+            <div>
+              <dt data-i18n="list.langs">Languages</dt>
+              <dd data-i18n="list.langs.v">Arabic and English</dd>
+            </div>
+            <div>
+              <dt data-i18n="cv.title">CV</dt>
+              <dd class="cv-links"><a href="assets/cv/Ramez-Gamel-CV-EN.pdf" download data-i18n="cv.en">English</a><a href="assets/cv/Ramez-Gamel-CV-AR.pdf" download data-i18n="cv.ar">Arabic</a></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <a class="next-page" href="./">
+        <span class="next-label" data-i18n="next.label">Next page</span>
+        <span class="next-title"><span data-i18n="nav.home">Home</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+      </a>
+      <div class="footer-inner">
+        <p>© <span data-year>2026</span> Ramez Gamel</p>
+        <button class="setting" type="button" aria-pressed="false" data-motion-toggle>
+          <span class="switch" aria-hidden="true"></span>
+          <span data-i18n="set.motion">Animations</span>
+          <span class="setting-state" data-motion-state>Off</span>
+        </button>
+        <button class="setting" type="button" data-palette-open>
+          <span class="kbd-pair" aria-hidden="true"><kbd>Ctrl</kbd><kbd>K</kbd></span>
+          <span data-i18n="set.palette">Command menu</span>
+        </button>
+        <a class="text-link" href="#top" data-i18n="footer.top">Back to top</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="motion-note" role="status" hidden data-motion-note>
+    <p data-i18n="note.text">Animations are off because your device is set to reduce motion.</p>
+    <button class="btn btn-primary btn-sm" type="button" data-motion-enable data-i18n="note.on">Turn on</button>
+    <button class="motion-note-close" type="button" aria-label="Dismiss" data-i18n-attr="aria-label:note.dismiss" data-motion-dismiss>×</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.11/dist/lenis.min.js" defer></script>
+  <script src="i18n.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>
