@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title data-i18n="meta.title.case.fz">Fuzzing targets case study — Ramez Gamel</title>
-  <meta name="description" content="23 C, C++ and Java codebases built as targets for security fuzzing: layered parsers, 141 fuzz targets and ClusterFuzzLite builds.">
+  <title data-i18n="meta.title.case.cn">CineScope case study — Ramez Gamel</title>
+  <meta name="description" content="How CineScope lets you find films by their colors: a color wheel, photo matching, a 3D color universe in three.js and movie pages tinted by each film.">
   <meta name="theme-color" content="#0c0c0d">
-  <link rel="canonical" href="https://ramezgamel01.github.io/case-fuzzing.html">
-  <meta property="og:url" content="https://ramezgamel01.github.io/case-fuzzing.html">
+  <link rel="canonical" href="https://ramezgamel01.github.io/case-cinescope.html">
+  <meta property="og:url" content="https://ramezgamel01.github.io/case-cinescope.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Ramez Gamel">
-  <meta property="og:title" content="Fuzzing targets case study — Ramez Gamel">
-  <meta property="og:description" content="23 C, C++ and Java codebases built as targets for security fuzzing: layered parsers, 141 fuzz targets and ClusterFuzzLite builds.">
+  <meta property="og:title" content="CineScope case study — Ramez Gamel">
+  <meta property="og:description" content="How CineScope lets you find films by their colors: a color wheel, photo matching, a 3D color universe in three.js and movie pages tinted by each film.">
   <meta property="og:image" content="https://ramezgamel01.github.io/assets/og/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -100,7 +100,7 @@
       </nav>
       <div class="menu-side">
         <div class="menu-preview" aria-hidden="true" data-menu-preview>
-          <div class="preview preview-photo" data-preview-pane="home"><img src="assets/portrait-cutout.png" alt="" width="460" height="460" loading="lazy"></div>
+          <div class="preview preview-photo" data-preview-pane="home"><img src="assets/portrait.webp" alt="" width="960" height="960" loading="lazy"></div>
           <div class="preview preview-shot" data-preview-pane="work"><img src="assets/work/workledger-full.jpg" alt="" width="900" height="832" loading="lazy"></div>
           <div class="preview preview-name" data-preview-pane="about"><span lang="ar">رامز</span></div>
           <div class="preview preview-clock" data-preview-pane="contact"><span data-preview-time>Cairo</span><small data-i18n="menu.city">Egypt</small></div>
@@ -145,33 +145,24 @@
       <div class="container">
         <a class="back-link" href="work.html"><svg class="i-arrow i-back" aria-hidden="true"><use href="#i-arrow"/></svg><span data-i18n="cs.back">All work</span></a>
         <h1 class="display" data-reveal="lines">
-          <span class="line"><span data-i18n="fuzz.title">Fuzzing targets</span></span>
-          <span class="line muted"><span data-i18n="fz.tagline">Code built to be attacked.</span></span>
+          <span class="line"><span>CineScope</span></span>
+          <span class="line muted"><span data-i18n="cn.tagline">Find films by their colors.</span></span>
         </h1>
-        <p class="page-lead" data-reveal style="--d:2" data-i18n="fz.lead">In June and July 2026 I built 23 codebases in C, C++ and Java as targets for security fuzzing. Each one parses a realistic binary format through several layers, so automated fuzzers have real depth to explore.</p>
+        <p class="page-lead" data-reveal style="--d:2" data-i18n="cn.lead">A movie app with a twist. Besides the usual search, trailers and favorites, you can pick a color, drop in a photo or fly through a 3D universe of films, and find the movies that look like it.</p>
         <dl class="case-facts" data-reveal style="--d:3">
-          <div><dt data-i18n="cs.role">Role</dt><dd data-i18n="fz.role">Design and development</dd></div>
+          <div><dt data-i18n="cs.role">Role</dt><dd data-i18n="cn.role">Design and development</dd></div>
           <div><dt data-i18n="cs.year">Year</dt><dd>2026</dd></div>
-          <div><dt data-i18n="cs.langs">Languages</dt><dd>C, C++, Java</dd></div>
-          <div><dt data-i18n="cs.tools">Tooling</dt><dd>libFuzzer, Jazzer, ClusterFuzzLite</dd></div>
+          <div><dt data-i18n="cs.stack">Stack</dt><dd>React, TypeScript, TanStack Start, three.js, Tailwind CSS</dd></div>
+          <div><dt data-i18n="cs.demo">Demo</dt><dd><a class="text-link" href="https://cinescope-gamma-ruby.vercel.app" data-i18n="cs.demo.link">Try it live</a></dd></div>
+          <div><dt data-i18n="cs.code">Code</dt><dd><a class="text-link" href="https://github.com/ramezGamel01/CINESCOPE">GitHub</a></dd></div>
         </dl>
       </div>
     </section>
 
     <section class="case-cover-wrap">
       <div class="container">
-        <figure class="case-cover case-cover-term" data-reveal>
-          <span class="term-bar"><span>byteharbor</span><span>Java 21</span></span>
-          <pre class="term" dir="ltr"><span class="term-cmd">java -ea -cp out/classes io.byteharbor.tests.AllTests</span>
-tests passed=185
-<span class="term-cmd">byteharbor create docs.bhf README.md RELEASE_NOTES.md LICENSE</span>
-<span class="term-cmd">byteharbor list docs.bhf</span>
-README.md          2860  text/markdown
-RELEASE_NOTES.md    693  text/markdown
-LICENSE             698  application/octet-stream
-<span class="term-cmd">byteharbor verify docs.bhf</span>
-valid BHF archive: 3 entries</pre>
-          <figcaption data-i18n="fz.cover">ByteHarbor's own test suite and command-line tool, run on Java 21.</figcaption>
+        <figure class="case-cover" data-reveal>
+          <img src="assets/case/cinescope-home.jpg" alt="CineScope home page with a tilted 3D wall of film posters behind the title" data-i18n-attr="alt:cn.cover.alt" width="1400" height="914">
         </figure>
       </div>
     </section>
@@ -179,93 +170,92 @@ valid BHF archive: 3 entries</pre>
     <section class="section case-body">
       <div class="container case-grid">
         <nav class="case-toc" aria-label="On this page" data-i18n-attr="aria-label:cs.toc">
-          <a href="#problem" data-i18n="fz.h.problem">Why depth matters</a>
-          <a href="#built" data-i18n="fz.h.built">What I built</a>
-          <a href="#build" data-i18n="fz.h.build">How each target works</a>
+          <a href="#problem" data-i18n="cs.h.problem">The problem</a>
+          <a href="#features" data-i18n="cs.h.features">What it does</a>
+          <a href="#build" data-i18n="cs.h.build">How it's built</a>
           <a href="#decisions" data-i18n="cs.toc.decisions">Decisions</a>
+          <a href="#screens" data-i18n="cs.h.screens">Screens</a>
           <a href="#numbers" data-i18n="cs.h.numbers">By the numbers</a>
         </nav>
 
         <div class="case-content">
           <section class="case-section" id="problem">
-            <h2 data-i18n="fz.h.problem">Why depth matters</h2>
-            <p data-reveal data-i18n="fz.problem.1">A fuzzer feeds a program millions of malformed inputs to find crashes and memory bugs. It can only reach deep bugs if the target has depth: a real format, several layers of parsing, and state that builds up as it reads. A toy parser is exhausted in seconds.</p>
-            <p data-reveal data-i18n="fz.problem.2">So each target models a believable format from end to end and ships with everything a fuzzing service needs to run it continuously.</p>
+            <h2 data-i18n="cs.h.problem">The problem</h2>
+            <p data-reveal data-i18n="cn.problem.1">Movie apps let you search by title, genre or cast, but not by how a film looks, which is often what you remember about it: teal night streets, desert gold, neon.</p>
+            <p data-reveal data-i18n="cn.problem.2">CineScope turns each film's colors into something you can search, compare and explore, and keeps a regular movie app around it.</p>
           </section>
 
-          <section class="case-section" id="built">
-            <h2 data-i18n="fz.h.built">What I built</h2>
-            <ul class="target-list" data-reveal>
-              <li>
-                <span class="target-name">ByteHarbor</span><span class="target-lang">Java 21</span>
-                <p data-i18n="fz.t.1">An archive library with bounded parsing, SHA-256 deduplication, binary deltas, revisions, full-text search and Merkle integrity proofs. 22 fuzz targets and 185 passing tests.</p>
-              </li>
-              <li>
-                <span class="target-name">mkvscope</span><span class="target-lang">C++17</span>
-                <p data-i18n="fz.t.2">A Matroska and WebM inspector. Parsed elements pass through resolvers, validators and five state machines before a report is written. 8 fuzz targets.</p>
-              </li>
-              <li>
-                <span class="target-name">objectloom</span><span class="target-lang">C++17</span>
-                <p data-i18n="fz.t.3">Reads archives of ELF object files with DWARF debug data and builds a link graph across them. 6 fuzz targets.</p>
-              </li>
-              <li>
-                <span class="target-name">boxweave</span><span class="target-lang">C++17</span>
-                <p data-i18n="fz.t.4">An MP4, QuickTime and HEIF inspector covering sample tables, movie fragments and conformance checks. 8 fuzz targets.</p>
-              </li>
-              <li>
-                <span class="target-name">tarline</span><span class="target-lang">C++17</span>
-                <p data-i18n="fz.t.5">Audits TAR archives, including USTAR, PAX, GNU long names and sparse files, and flags risky paths before anything is restored. 4 fuzz targets.</p>
-              </li>
-              <li>
-                <span class="target-name">helixpack</span><span class="target-lang">C11</span>
-                <p data-i18n="fz.t.6">Multi-section telemetry bundles read through a registry and separate subsystem processors. 9 fuzz targets.</p>
-              </li>
+          <section class="case-section" id="features">
+            <h2 data-i18n="cs.h.features">What it does</h2>
+            <ul class="case-list" data-reveal>
+              <li data-i18n="cn.feat.1">Search by color with a color wheel and a lightness slider, or start from a preset look like teal and orange or neon noir.</li>
+              <li data-i18n="cn.feat.2">Drop in any photo: its palette is extracted in the browser, with nothing uploaded, and matched against every film.</li>
+              <li data-i18n="cn.feat.3">A 3D color universe in three.js. Every film is a point of light placed by hue, colorfulness and brightness. Drag to orbit, scroll to zoom, click to open.</li>
+              <li data-i18n="cn.feat.4">Movie pages take their accent color from the film and show its palette, look-alike films, cast and trailer.</li>
+              <li data-i18n="cn.feat.5">Copy a palette as CSS or Tailwind, download it as SVG, or save a share card image.</li>
+              <li data-i18n="cn.feat.6">Trending films, search by title and favorites, with data from The Movie Database.</li>
             </ul>
-            <p class="case-note" data-i18n="fz.more">Plus 17 more targets in C, C++ and Java. The repositories are private; code samples are available on request.</p>
           </section>
 
           <section class="case-section" id="build">
-            <h2 data-i18n="fz.h.build">How each target works</h2>
-            <p data-reveal data-i18n="fz.build.1">Input flows through the same layers every time, and each layer can be fuzzed on its own as well as through the whole pipeline.</p>
-            <div class="case-flow case-flow-5" data-reveal>
-              <div class="flow-step"><span class="flow-name" data-i18n="fz.flow.1">Byte reader</span><span class="flow-note" data-i18n="fz.flow.1n">Bounds-checked reads</span></div>
-              <div class="flow-step"><span class="flow-name" data-i18n="fz.flow.2">Format parser</span><span class="flow-note" data-i18n="fz.flow.2n">Sections, boxes, records</span></div>
-              <div class="flow-step"><span class="flow-name" data-i18n="fz.flow.3">Typed model</span><span class="flow-note" data-i18n="fz.flow.3n">Cross-references resolved</span></div>
-              <div class="flow-step"><span class="flow-name" data-i18n="fz.flow.4">Validators</span><span class="flow-note" data-i18n="fz.flow.4n">Rules and state machines</span></div>
-              <div class="flow-step"><span class="flow-name" data-i18n="fz.flow.5">Reports</span><span class="flow-note" data-i18n="fz.flow.5n">Text and JSON output</span></div>
+            <h2 data-i18n="cs.h.build">How it's built</h2>
+            <p data-reveal data-i18n="cn.build.1">React and TypeScript on TanStack Start, with TanStack Query for the movie data. Each film's palette is computed ahead of time by a small build script and shipped as JSON; the browser does the color math itself in OKLab, a color space where the distance between two colors matches how different they look. The universe is a three.js scene, the poster wall is CSS 3D transforms, and pages change with the View Transitions API.</p>
+            <div class="case-flow" data-reveal aria-label="How CineScope finds films by color" data-i18n-attr="aria-label:cn.flow.label">
+              <div class="flow-step"><span class="flow-name" data-i18n="cn.flow.1">Film palettes</span><span class="flow-note" data-i18n="cn.flow.1n">Computed ahead of time</span></div>
+              <div class="flow-step"><span class="flow-name" data-i18n="cn.flow.2">Your color or photo</span><span class="flow-note" data-i18n="cn.flow.2n">Converted to OKLab in the browser</span></div>
+              <div class="flow-step"><span class="flow-name" data-i18n="cn.flow.3">Ranked films</span><span class="flow-note" data-i18n="cn.flow.3n">By how much of the frame is close</span></div>
             </div>
-            <p data-reveal data-i18n="fz.build.2">Every repository carries its fuzz harnesses and seed inputs. Most add regression tests, and 22 of the 23 include a ClusterFuzzLite build so they can run in continuous fuzzing.</p>
           </section>
 
           <section class="case-section" id="decisions">
             <h2 data-i18n="cs.h.decisions">Decisions that shaped it</h2>
             <div class="decisions">
               <article class="decision" data-reveal>
-                <h3 data-i18n="fz.dec.1.t">Bounded by default</h3>
-                <p data-i18n="fz.dec.1.d">Parsers check sizes, counts and nesting depth before they allocate, so malformed input fails cleanly instead of exhausting memory.</p>
+                <h3 data-i18n="cn.dec.1.t">Color math that matches the eye</h3>
+                <p data-i18n="cn.dec.1.d">Distances are measured in OKLab instead of RGB, so two colors that look close are close in the numbers too. The same math ranks films, places them in 3D and picks each page's accent.</p>
               </article>
               <article class="decision" data-reveal>
-                <h3 data-i18n="fz.dec.2.t">A harness for every layer</h3>
-                <p data-i18n="fz.dec.2.d">Rather than one entry point, layers get their own fuzzers: the full pipeline, but also the query parser, the delta engine or the graph resolver. Code deep in the stack becomes reachable.</p>
+                <h3 data-i18n="cn.dec.2.t">Photos never leave the browser</h3>
+                <p data-i18n="cn.dec.2.d">A dropped photo is drawn to a canvas, scaled down and grouped into a palette on the device. Nothing is uploaded, and matching takes a moment instead of a trip to a server.</p>
               </article>
               <article class="decision" data-reveal>
-                <h3 data-i18n="fz.dec.3.t">Start from real structure</h3>
-                <p data-i18n="fz.dec.3.d">Each fuzzer ships with valid seed files, and ByteHarbor adds dictionaries of format tokens, so fuzzing starts from real structure instead of random bytes.</p>
+                <h3 data-i18n="cn.dec.3.t">Motion with an off switch</h3>
+                <p data-i18n="cn.dec.3.d">The 3D poster wall, scroll reveals and page transitions follow the system's reduce-motion setting, and a Motion toggle in the footer lets anyone switch them on or off. With motion off, the 3D layout stays; only the movement stops.</p>
               </article>
               <article class="decision" data-reveal>
-                <h3 data-i18n="fz.dec.4.t">Offline and reproducible</h3>
-                <p data-i18n="fz.dec.4.d">No network access and no downloaded dependencies. Every target builds the same way on a laptop and in ClusterFuzzLite.</p>
+                <h3 data-i18n="cn.dec.4.t">Transitions that keep your place</h3>
+                <p data-i18n="cn.dec.4.d">A poster grows into the movie page with the View Transitions API, so you can see where you came from. Changes on the same page, like moving the color wheel, skip the transition so the page doesn't flash.</p>
+              </article>
+              <article class="decision" data-reveal>
+                <h3 data-i18n="cn.dec.5.t">Works without an API key</h3>
+                <p data-i18n="cn.dec.5.d">Without a TMDB key, the app runs on a curated catalog of 85 films, so the color features work anywhere, even in a fresh copy of the code.</p>
               </article>
             </div>
+          </section>
+
+          <section class="case-section" id="screens">
+            <h2 data-i18n="cs.h.screens">Screens</h2>
+            <figure class="case-shot" data-reveal>
+              <img src="assets/case/cinescope-colors.jpg" alt="Search by color page with the color wheel and the best matching films" data-i18n-attr="alt:cn.shot.1.alt" width="1400" height="914" loading="lazy">
+              <figcaption data-i18n="cn.shot.1">Search by color: pick a hue on the wheel or a preset look, and films are ranked by how much of their frame is close to it.</figcaption>
+            </figure>
+            <figure class="case-shot" data-reveal>
+              <img src="assets/case/cinescope-universe.jpg" alt="A 3D color universe with films shown as points of light" data-i18n-attr="alt:cn.shot.2.alt" width="1400" height="914" loading="lazy">
+              <figcaption data-i18n="cn.shot.2">The color universe: hue around the ring, colorfulness outward, brightness upward.</figcaption>
+            </figure>
+            <figure class="case-shot" data-reveal>
+              <img src="assets/case/cinescope-movie.jpg" alt="Movie page for Inception with its poster, backdrop and overview" data-i18n-attr="alt:cn.shot.3.alt" width="1400" height="914" loading="lazy">
+              <figcaption data-i18n="cn.shot.3">A movie page in the film's own colors. Its poster and backdrop carry over from the page before.</figcaption>
+            </figure>
           </section>
 
           <section class="case-section" id="numbers">
             <h2 data-i18n="cs.h.numbers">By the numbers</h2>
             <ul class="stats case-stats" data-reveal>
-              <li><span class="stat-num">23</span><span class="stat-label" data-i18n="fz.num.1">Codebases</span></li>
-              <li><span class="stat-num">141</span><span class="stat-label" data-i18n="fz.num.2">Fuzz targets</span></li>
-              <li><span class="stat-num">3</span><span class="stat-label" data-i18n="fz.num.3">Languages</span></li>
-              <li><span class="stat-num">22</span><span class="stat-label" data-i18n="fz.num.4">With ClusterFuzzLite</span></li>
+              <li><span class="stat-num">85</span><span class="stat-label" data-i18n="cn.num.1">Films in the color catalog</span></li>
+              <li><span class="stat-num">3</span><span class="stat-label" data-i18n="cn.num.2">Ways to search by color</span></li>
+              <li><span class="stat-num">7</span><span class="stat-label" data-i18n="cn.num.3">Visual styles to browse</span></li>
+              <li><span class="stat-num">6</span><span class="stat-label" data-i18n="cn.num.4">Pages</span></li>
             </ul>
           </section>
         </div>
@@ -275,9 +265,9 @@ valid BHF archive: 3 entries</pre>
 
   <footer class="site-footer">
     <div class="container">
-      <a class="next-page" href="work.html">
+      <a class="next-page" href="case-taskflow.html">
         <span class="next-label" data-i18n="next.label">Next page</span>
-        <span class="next-title"><span data-i18n="cs.back">All work</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+        <span class="next-title"><span>TaskFlow</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></span>
       </a>
       <div class="footer-inner">
         <p>© <span data-year>2026</span> Ramez Gamel</p>

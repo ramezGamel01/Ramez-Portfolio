@@ -6,7 +6,6 @@
   const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
   const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
   const lerp = (from, to, t) => from + (to - from) * t;
-  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const escapeHTML = (text) =>
     text.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
@@ -545,7 +544,7 @@
   }
 
   /* ---------- Lamp glow inside panels and rows ---------- */
-  $$(".card, .archive a, .next-page, .demo").forEach((el) => {
+  $$(".card, .archive a, .next-page").forEach((el) => {
     el.addEventListener("pointermove", (event) => {
       const box = el.getBoundingClientRect();
       el.style.setProperty("--mx", `${event.clientX - box.left}px`);
@@ -622,181 +621,6 @@
       else if (marqueeX > 0) marqueeX -= marqueeHalf;
     }
     track.style.transform = `translate3d(${marqueeX.toFixed(2)}px, 0, 0)`;
-  }
-
-  /* ---------- AI review demo ---------- */
-  const EXAMPLES = [
-    {
-      promptLang: "ar",
-      prompt: "اكتب جملة ترحيب قصيرة لعميل جديد.",
-      lang: "ar",
-      draft: ["مرحبا بك ", { flag: "في عميل جديد لدينا" }, "."],
-      note: {
-        en: "Word-for-word from English. No native speaker would say this.",
-        ar: "ترجمة حرفية عن الإنجليزية، لا يقولها متحدث أصلي.",
-      },
-      checks: { accuracy: true, fluency: false, tone: false },
-      rewrite: "أهلًا بك! يسعدنا انضمامك إلينا.",
-    },
-    {
-      promptLang: "en",
-      prompt: "Translate into Arabic: “It's raining cats and dogs.”",
-      lang: "ar",
-      draft: ["إنها تمطر ", { flag: "قططًا وكلابًا" }, "."],
-      note: {
-        en: "The idiom was translated literally, so the meaning is lost.",
-        ar: "تُرجم المثل حرفيًا فضاع معناه.",
-      },
-      checks: { accuracy: false, fluency: false, tone: true },
-      rewrite: "إنها تمطر بغزارة.",
-    },
-    {
-      promptLang: "en",
-      prompt: "Explain what a cache is to a 10-year-old.",
-      lang: "en",
-      draft: [
-        "A cache is a ",
-        { flag: "high-speed data storage layer" },
-        " that stores a subset of data, ",
-        { flag: "typically transient in nature" },
-        ", so future requests are served faster.",
-      ],
-      note: {
-        en: "Too technical for a 10-year-old.",
-        ar: "مصطلحات صعبة على طفل في العاشرة.",
-      },
-      checks: { accuracy: true, fluency: true, tone: false },
-      rewrite:
-        "A cache is like a small backpack. Your computer keeps the things it uses most in there, so it doesn't have to walk to the big closet every time.",
-    },
-  ];
-  const CHECKS = ["accuracy", "fluency", "tone"];
-
-  const demo = $("[data-demo]");
-  if (demo) {
-    const out = {
-      prompt: $("[data-demo-prompt]", demo),
-      draft: $("[data-demo-draft]", demo),
-      note: $("[data-demo-note]", demo),
-      checks: $("[data-demo-checks]", demo),
-      rewrite: $("[data-demo-rewrite]", demo),
-    };
-    const tabs = $$("[data-example]", demo);
-    let current = 0;
-    let run = 0;
-
-    const setLangOf = (node, code) => {
-      node.lang = code;
-      node.dir = code === "ar" ? "rtl" : "ltr";
-    };
-    const plainDraft = (ex) => ex.draft.map((part) => (typeof part === "string" ? part : part.flag)).join("");
-    const markedDraft = (ex) =>
-      ex.draft
-        .map((part) => (typeof part === "string" ? escapeHTML(part) : `<mark>${escapeHTML(part.flag)}</mark>`))
-        .join("");
-
-    function renderChecks(ex, fixed) {
-      out.checks.innerHTML = CHECKS.map((key) => {
-        const pass = ex.checks[key] || fixed;
-        const cls = ex.checks[key] ? "is-pass" : fixed ? "is-pass is-fixed" : "is-fail";
-        return `<li class="${cls}"><svg aria-hidden="true"><use href="#i-${pass ? "check" : "cross"}"/></svg><span>${t(
-          `check.${key}`
-        )}</span><span class="sr-only">${t(pass ? "check.pass" : "check.fail")}</span></li>`;
-      }).join("");
-    }
-
-    function renderFinal(ex) {
-      setLangOf(out.prompt, ex.promptLang);
-      setLangOf(out.draft, ex.lang);
-      setLangOf(out.rewrite, ex.lang);
-      out.prompt.textContent = ex.prompt;
-      out.draft.innerHTML = markedDraft(ex);
-      out.note.textContent = ex.note[lang];
-      out.note.classList.add("is-shown");
-      out.checks.classList.add("is-shown");
-      renderChecks(ex, true);
-      out.rewrite.textContent = ex.rewrite;
-    }
-
-    async function type(node, text, id, speed) {
-      node.innerHTML = '<span class="typed"></span><span class="caret" aria-hidden="true"></span>';
-      const typed = node.firstChild;
-      const chars = [...text];
-      for (let i = 1; i <= chars.length; i++) {
-        if (id !== run) return;
-        typed.textContent = chars.slice(0, i).join("");
-        await wait(speed);
-      }
-      $(".caret", node)?.remove();
-    }
-
-    async function play(index) {
-      const id = ++run;
-      const ex = EXAMPLES[index];
-      current = index;
-      tabs.forEach((tab, i) => tab.setAttribute("aria-selected", String(i === index)));
-
-      setLangOf(out.prompt, ex.promptLang);
-      setLangOf(out.draft, ex.lang);
-      setLangOf(out.rewrite, ex.lang);
-      out.prompt.textContent = ex.prompt;
-      out.draft.textContent = "";
-      out.rewrite.textContent = "";
-      out.note.textContent = "";
-      out.note.classList.remove("is-shown");
-      out.checks.classList.remove("is-shown");
-      renderChecks(ex, false);
-
-      if (!motion) {
-        renderFinal(ex);
-        return;
-      }
-
-      await wait(300);
-      await type(out.draft, plainDraft(ex), id, 24);
-      if (id !== run) return;
-      await wait(350);
-      out.draft.innerHTML = markedDraft(ex);
-      out.note.textContent = ex.note[lang];
-      out.note.classList.add("is-shown");
-      await wait(500);
-      out.checks.classList.add("is-shown");
-      await wait(1000);
-      if (id !== run) return;
-      await type(out.rewrite, ex.rewrite, id, 26);
-      if (id !== run) return;
-      await wait(250);
-      renderChecks(ex, true);
-    }
-
-    tabs.forEach((tab, i) => tab.addEventListener("click", () => play(i)));
-    $("[data-demo-replay]", demo)?.addEventListener("click", () => play(current));
-
-    // Arrow keys move between the example tabs
-    $(".demo-tabs", demo).addEventListener("keydown", (event) => {
-      const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
-      if (!step) return;
-      const dirStep = root.dir === "rtl" ? -step : step;
-      const next = (current + dirStep + tabs.length) % tabs.length;
-      tabs[next].focus();
-      play(next);
-    });
-
-    renderFinal(EXAMPLES[0]);
-    const starter = new IntersectionObserver(
-      (entries) => {
-        if (!entries[0].isIntersecting) return;
-        starter.disconnect();
-        play(0);
-      },
-      { threshold: 0.4 }
-    );
-    starter.observe(demo);
-
-    document.addEventListener("langchange", () => {
-      run++;
-      renderFinal(EXAMPLES[current]);
-    });
   }
 
   /* ---------- Message builder (contact) ---------- */
@@ -976,8 +800,10 @@
   const commands = () => [
     { group: "palette.pages", label: t("cmd.home"), keys: "home start", run: goTo("./") },
     { group: "palette.pages", label: t("cmd.work"), keys: "work projects portfolio", run: goTo("work.html") },
-    { group: "palette.pages", label: t("cmd.case.wl"), keys: "workledger case study invoices", run: goTo("case-workledger.html") },
-    { group: "palette.pages", label: t("cmd.case.fz"), keys: "fuzzing security c c++ java byteharbor case study", run: goTo("case-fuzzing.html") },
+    { group: "palette.pages", label: t("cmd.case.wl"), keys: "workledger case study invoices time tracking", run: goTo("case-workledger.html") },
+    { group: "palette.pages", label: t("cmd.case.cs"), keys: "cinescope case study films movies colors 3d", run: goTo("case-cinescope.html") },
+    { group: "palette.pages", label: t("cmd.case.tf"), keys: "taskflow case study tasks todo", run: goTo("case-taskflow.html") },
+    { group: "palette.pages", label: t("cmd.case.rh"), keys: "rihla case study travel bus booking egypt", run: goTo("case-rihla.html") },
     { group: "palette.pages", label: t("cmd.about"), keys: "about bio story", run: goTo("about.html") },
     { group: "palette.pages", label: t("cmd.contact"), keys: "contact hire email message", run: goTo("contact.html") },
     { group: "palette.actions", label: t(theme === "light" ? "cord.on" : "cord.off"), keys: "lights theme dark light mode", run: () => setTheme(theme === "light" ? "dark" : "light") },
