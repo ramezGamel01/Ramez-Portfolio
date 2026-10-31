@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="meta.title.case.tf">TaskFlow case study — Ramez Gamel</title>
-  <meta name="description" content="How TaskFlow plans the day in the browser: one shared task state, filters that work the same in every view, and a dashboard that renders the same on the server and in the browser.">
+  <meta name="description" content="How TaskFlow was rebuilt in React with three.js: the day as a 3D orbit of tasks, quick add that reads plain English and Arabic, a drag-and-drop board, a calendar and insights.">
   <meta name="theme-color" content="#0c0c0d">
   <link rel="canonical" href="https://ramezgamel.vercel.app/case-taskflow.html">
   <meta property="og:url" content="https://ramezgamel.vercel.app/case-taskflow.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Ramez Gamel">
   <meta property="og:title" content="TaskFlow case study — Ramez Gamel">
-  <meta property="og:description" content="How TaskFlow plans the day in the browser: one shared task state, filters that work the same in every view, and a dashboard that renders the same on the server and in the browser.">
+  <meta property="og:description" content="How TaskFlow was rebuilt in React with three.js: the day as a 3D orbit of tasks, quick add that reads plain English and Arabic, a drag-and-drop board, a calendar and insights.">
   <meta property="og:image" content="https://ramezgamel.vercel.app/assets/og/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -147,13 +147,13 @@
         <a class="back-link" href="work.html"><svg class="i-arrow i-back" aria-hidden="true"><use href="#i-arrow"/></svg><span data-i18n="cs.back">All work</span></a>
         <h1 class="display" data-reveal="lines">
           <span class="line"><span>TaskFlow</span></span>
-          <span class="line muted"><span data-i18n="tf.tagline">Plan the day, see the progress.</span></span>
+          <span class="line muted"><span data-i18n="tf.tagline">Your day, in orbit.</span></span>
         </h1>
-        <p class="page-lead" data-reveal style="--d:2" data-i18n="tf.lead">A task manager for planning the day. Each task has a due date, priority, category and status, and every view, from the dashboard to the completed list, is built from the same list of tasks saved in the browser.</p>
+        <p class="page-lead" data-reveal style="--d:2" data-i18n="tf.lead">A task manager rebuilt in React with three.js. Today's tasks circle a glowing core as planets, and finishing one pulls it into the centre. Around it: quick add that reads plain English and Arabic, a board you can drag, a calendar and insights from the last two weeks.</p>
         <dl class="case-facts" data-reveal style="--d:3">
           <div><dt data-i18n="cs.role">Role</dt><dd data-i18n="tf.role">Design and development</dd></div>
           <div><dt data-i18n="cs.year">Year</dt><dd>2026</dd></div>
-          <div><dt data-i18n="cs.stack">Stack</dt><dd>React, TypeScript, TanStack Start, Tailwind CSS, shadcn/ui</dd></div>
+          <div><dt data-i18n="cs.stack">Stack</dt><dd>React, JavaScript, three.js, React Three Fiber, React Router, Vite</dd></div>
           <div><dt data-i18n="cs.demo">Demo</dt><dd><a class="text-link" href="https://task-flow-alpha-navy.vercel.app" data-i18n="cs.demo.link">Try it live</a></dd></div>
           <div><dt data-i18n="cs.code">Code</dt><dd><a class="text-link" href="https://github.com/ramezGamel01/Task-Flow">GitHub</a></dd></div>
         </dl>
@@ -163,7 +163,7 @@
     <section class="case-cover-wrap">
       <div class="container">
         <figure class="case-cover" data-reveal>
-          <img src="assets/case/taskflow-dashboard.jpg" alt="TaskFlow dashboard with overall progress, task totals and the Today&#x27;s focus list" data-i18n-attr="alt:tf.cover.alt" width="1400" height="914">
+          <img src="assets/case/taskflow-today.jpg" alt="TaskFlow&#x27;s Today page: the day&#x27;s progress next to a 3D orbit of tasks, with quick add below" data-i18n-attr="alt:tf.cover.alt" width="1400" height="914">
         </figure>
       </div>
     </section>
@@ -182,29 +182,29 @@
         <div class="case-content">
           <section class="case-section" id="problem">
             <h2 data-i18n="cs.h.problem">The problem</h2>
-            <p data-reveal data-i18n="tf.problem.1">Most to-do apps either ask for an account before you can write a single task, or show a flat list that doesn't tell you what matters today.</p>
-            <p data-reveal data-i18n="tf.problem.2">TaskFlow opens straight to a dashboard: how much is done, what's due today and what's high priority. There's nothing to sign up for; the tasks live in your browser.</p>
+            <p data-reveal data-i18n="tf.problem.1">A to-do list tells you what's on it, not how the day is going. The first TaskFlow had a dashboard of totals; the rebuild asks for something you can read at a glance: how much is left, what matters most and what's running late.</p>
+            <p data-reveal data-i18n="tf.problem.2">So today becomes a small solar system. Priority sets how close a task orbits, its category sets its colour, overdue work pulses red, and every finished task falls into the core. Adding tasks had to be just as quick, so you type the way you'd say it, in English or Arabic.</p>
           </section>
 
           <section class="case-section" id="features">
             <h2 data-i18n="cs.h.features">What it does</h2>
             <ul class="case-list" data-reveal>
-              <li data-i18n="tf.feat.1">A dashboard with overall progress, totals for completed, pending, high-priority and due-today tasks, and a Today's focus list.</li>
-              <li data-i18n="tf.feat.2">Separate views for all tasks, today and completed, each with the same filters.</li>
-              <li data-i18n="tf.feat.3">Tasks with a title, description, due date, priority, category and status, created and edited in a dialog.</li>
-              <li data-i18n="tf.feat.4">Filters by status, priority and category, sorting by due date or priority, and search from the top bar.</li>
-              <li data-i18n="tf.feat.5">Overdue tasks are outlined in red, with the date they were due.</li>
-              <li data-i18n="tf.feat.6">Light and dark themes that follow the system setting until you pick one.</li>
+              <li data-i18n="tf.feat.1">Today as a 3D orbit: hover a planet to see the task, click it to open it. Finishing a task pulls its planet into the core while the core's progress arc fills, and scrolling tips the system on its side.</li>
+              <li data-i18n="tf.feat.2">Quick add that reads dates, times, #categories and !priorities as you type, in English or Arabic, colours them inside the field and shows how each was read.</li>
+              <li data-i18n="tf.feat.3">A board with To do, In progress and Done. The dragged card leans as it moves, and Alt with the arrow keys moves a card from the keyboard.</li>
+              <li data-i18n="tf.feat.4">A calendar where you drag a task onto a day to reschedule it. The week starts on Saturday in Arabic and Monday in English.</li>
+              <li data-i18n="tf.feat.5">Insights: this week against last, the day streak, the share done on time, focus time, a 14-day chart and a breakdown by category.</li>
+              <li data-i18n="tf.feat.6">25-minute focus sessions, a command palette on Ctrl + K, keyboard shortcuts, subtasks, Undo after deleting, and JSON export and import.</li>
             </ul>
           </section>
 
           <section class="case-section" id="build">
             <h2 data-i18n="cs.h.build">How it's built</h2>
-            <p data-reveal data-i18n="tf.build.1">React and TypeScript on TanStack Start, which renders each page on the server and hydrates it in the browser. Components come from shadcn/ui, built on Radix, and are styled with Tailwind CSS v4 and color tokens for both themes. All task state lives in one React context that saves to localStorage.</p>
-            <div class="case-flow" data-reveal aria-label="How data flows through TaskFlow" data-i18n-attr="aria-label:tf.flow.label">
-              <div class="flow-step"><span class="flow-name" data-i18n="tf.flow.1">Tasks in localStorage</span><span class="flow-note" data-i18n="tf.flow.1n">Saved on every change</span></div>
-              <div class="flow-step"><span class="flow-name" data-i18n="tf.flow.2">One shared task state</span><span class="flow-note" data-i18n="tf.flow.2n">Add, edit, complete, delete</span></div>
-              <div class="flow-step"><span class="flow-name" data-i18n="tf.flow.3">Dashboard and views</span><span class="flow-note" data-i18n="tf.flow.3n">Filtered, searched and sorted</span></div>
+            <p data-reveal data-i18n="tf.build.1">React 19 and JavaScript with React Router and Vite, every page except Today loaded on demand. The orbit uses three.js through React Three Fiber in its own chunk, and stops drawing when it's off screen. The task list is a reducer of plain functions with tests, saved to the browser on every change; tasks from the first version are migrated on first load.</p>
+            <div class="case-flow" data-reveal aria-label="How a task moves through TaskFlow" data-i18n-attr="aria-label:tf.flow.label">
+              <div class="flow-step"><span class="flow-name" data-i18n="tf.flow.1">Typed in plain words</span><span class="flow-note" data-i18n="tf.flow.1n">Read into date, time, tags</span></div>
+              <div class="flow-step"><span class="flow-name" data-i18n="tf.flow.2">One task list</span><span class="flow-note" data-i18n="tf.flow.2n">A tested reducer, saved locally</span></div>
+              <div class="flow-step"><span class="flow-name" data-i18n="tf.flow.3">Orbit, board, calendar</span><span class="flow-note" data-i18n="tf.flow.3n">Four views of the same tasks</span></div>
             </div>
           </section>
 
@@ -212,24 +212,24 @@
             <h2 data-i18n="cs.h.decisions">Decisions that shaped it</h2>
             <div class="decisions">
               <article class="decision" data-reveal>
-                <h3 data-i18n="tf.dec.1.t">No account to start</h3>
-                <p data-i18n="tf.dec.1.d">Tasks are saved in the browser under a versioned key, so the format can change later without breaking old data. A first visit is seeded with sample tasks dated around today, so the dashboard is never empty.</p>
+                <h3 data-i18n="tf.dec.1.t">A parser instead of a form</h3>
+                <p data-i18n="tf.dec.1.d">Quick add lifts dates, times, categories and priorities out of the sentence with small rules for each, in both languages, and leaves the rest as the title. A time needs "at", "@" or am/pm, so "buy 3 apples" stays a title. It has its own tests in English and Arabic.</p>
               </article>
               <article class="decision" data-reveal>
-                <h3 data-i18n="tf.dec.2.t">One list, many views</h3>
-                <p data-i18n="tf.dec.2.d">All tasks, Today and Completed are the same page component given a different filter. Filtering, search and sorting run in one memoized step, so every view behaves the same way.</p>
+                <h3 data-i18n="tf.dec.2.t">Highlighting inside a plain input</h3>
+                <p data-i18n="tf.dec.2.d">The field stays a normal text input, so typing, selecting and screen readers work as usual. Behind it sits a copy of the text with the recognised words coloured, scrolled in step with the input.</p>
               </article>
               <article class="decision" data-reveal>
-                <h3 data-i18n="tf.dec.3.t">The same markup on server and client</h3>
-                <p data-i18n="tf.dec.3.d">Tasks load after the page hydrates, and the time-of-day greeting is set in the browser, so the HTML from the server always matches the first render in the browser. This fixed a hydration error that only appeared when the visitor's clock was in a different part of the day than the server's.</p>
+                <h3 data-i18n="tf.dec.3.t">Dragging that works without a mouse</h3>
+                <p data-i18n="tf.dec.3.d">Board and calendar share one pointer-drag helper: a copy of the card follows the pointer and leans into the motion. Alt and the arrow keys do the same job from the keyboard, and each move is announced to screen readers.</p>
               </article>
               <article class="decision" data-reveal>
-                <h3 data-i18n="tf.dec.4.t">Dates without time-zone surprises</h3>
-                <p data-i18n="tf.dec.4.d">Due dates are stored as plain yyyy-mm-dd strings and compared in local time, so a task due today stays due today wherever you are.</p>
+                <h3 data-i18n="tf.dec.4.t">3D that earns its place</h3>
+                <p data-i18n="tf.dec.4.d">The orbit is the day's summary, not decoration: ring for priority, colour for category, a pulse for late work. It loads in its own chunk, pauses off screen, follows the reduce-motion setting, and falls back to a flat drawing without WebGL.</p>
               </article>
               <article class="decision" data-reveal>
-                <h3 data-i18n="tf.dec.5.t">Accessible building blocks</h3>
-                <p data-i18n="tf.dec.5.d">Dialogs, selects and menus are Radix components, so focus handling, keyboard navigation and screen-reader labels work without extra code. Every action confirms with a short toast.</p>
+                <h3 data-i18n="tf.dec.5.t">Arabic written for everyone</h3>
+                <p data-i18n="tf.dec.5.d">Every string has an Arabic version with the right plural forms and Arabic-Indic digits, and the wording avoids commands addressed to one gender, so it reads right to every user. A test fails if a string is missing in either language.</p>
               </article>
             </div>
           </section>
@@ -237,16 +237,24 @@
           <section class="case-section" id="screens">
             <h2 data-i18n="cs.h.screens">Screens</h2>
             <figure class="case-shot" data-reveal>
-              <img src="assets/case/taskflow-tasks.jpg" alt="All tasks page with filters and task cards" data-i18n-attr="alt:tf.shot.1.alt" width="1400" height="914" loading="lazy">
-              <figcaption data-i18n="tf.shot.1">All tasks with filters for status, priority and category. Overdue tasks are outlined in red.</figcaption>
+              <img src="assets/case/taskflow-quickadd.jpg" alt="Quick add field with tomorrow, at 4pm, #work and !high highlighted, and chips showing how each was read" data-i18n-attr="alt:tf.shot.1.alt" width="1400" height="914" loading="lazy">
+              <figcaption data-i18n="tf.shot.1">Quick add reads the date, time, category and priority as you type and colours them in place.</figcaption>
             </figure>
             <figure class="case-shot" data-reveal>
-              <img src="assets/case/taskflow-form.jpg" alt="New task dialog over the task list" data-i18n-attr="alt:tf.shot.2.alt" width="1400" height="914" loading="lazy">
-              <figcaption data-i18n="tf.shot.2">Creating a task in a dialog: title, description, due date, priority, category and status.</figcaption>
+              <img src="assets/case/taskflow-board.jpg" alt="Board with three columns and a card being dragged into In progress" data-i18n-attr="alt:tf.shot.2.alt" width="1400" height="914" loading="lazy">
+              <figcaption data-i18n="tf.shot.2">Dragging a card on the board: it leans as it moves, and a slot shows where it will land.</figcaption>
             </figure>
             <figure class="case-shot" data-reveal>
-              <img src="assets/case/taskflow-dark.jpg" alt="TaskFlow dashboard in the dark theme" data-i18n-attr="alt:tf.shot.3.alt" width="1400" height="914" loading="lazy">
-              <figcaption data-i18n="tf.shot.3">The dashboard in the dark theme.</figcaption>
+              <img src="assets/case/taskflow-calendar.jpg" alt="Month calendar with task chips and a side panel for the selected day" data-i18n-attr="alt:tf.shot.3.alt" width="1400" height="914" loading="lazy">
+              <figcaption data-i18n="tf.shot.3">The calendar, with the selected day's tasks beside it and undated tasks ready to drag onto a day.</figcaption>
+            </figure>
+            <figure class="case-shot" data-reveal>
+              <img src="assets/case/taskflow-insights.jpg" alt="Insights page with four figures and a bar chart of tasks finished per day" data-i18n-attr="alt:tf.shot.4.alt" width="1400" height="914" loading="lazy">
+              <figcaption data-i18n="tf.shot.4">Insights in the dark theme: this week against last, the streak, on-time share, focus time and a 14-day chart.</figcaption>
+            </figure>
+            <figure class="case-shot" data-reveal>
+              <img src="assets/case/taskflow-ar-dark.jpg" alt="TaskFlow in Arabic with the dark theme, the orbit on the left and the sidebar on the right" data-i18n-attr="alt:tf.shot.5.alt" width="1400" height="914" loading="lazy">
+              <figcaption data-i18n="tf.shot.5">In Arabic: the layout flips right to left and the planets orbit the other way.</figcaption>
             </figure>
             <p class="case-note" data-i18n="tf.sample">Screens show the sample tasks a first visit starts with.</p>
           </section>
@@ -254,10 +262,10 @@
           <section class="case-section" id="numbers">
             <h2 data-i18n="cs.h.numbers">By the numbers</h2>
             <ul class="stats case-stats" data-reveal>
-              <li><span class="stat-num">5</span><span class="stat-label" data-i18n="tf.num.1">Pages</span></li>
-              <li><span class="stat-num">3</span><span class="stat-label" data-i18n="tf.num.2">Filters, plus sort and search</span></li>
-              <li><span class="stat-num">6</span><span class="stat-label" data-i18n="tf.num.3">Task categories</span></li>
-              <li><span class="stat-num">2</span><span class="stat-label" data-i18n="tf.num.4">Themes, light and dark</span></li>
+              <li><span class="stat-num">4</span><span class="stat-label" data-i18n="tf.num.1">Views of the same tasks</span></li>
+              <li><span class="stat-num">34</span><span class="stat-label" data-i18n="tf.num.2">Automated tests</span></li>
+              <li><span class="stat-num">2</span><span class="stat-label" data-i18n="tf.num.3">Languages, LTR and RTL</span></li>
+              <li><span class="stat-num">0</span><span class="stat-label" data-i18n="tf.num.4">Accounts needed</span></li>
             </ul>
           </section>
         </div>
