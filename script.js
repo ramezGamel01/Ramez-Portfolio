@@ -848,6 +848,7 @@
     { group: "palette.pages", label: t("cmd.case.cs"), keys: "cinescope case study films movies colors 3d", run: goTo("case-cinescope.html") },
     { group: "palette.pages", label: t("cmd.case.tf"), keys: "taskflow case study tasks todo", run: goTo("case-taskflow.html") },
     { group: "palette.pages", label: t("cmd.case.rh"), keys: "rihla case study travel bus booking egypt", run: goTo("case-rihla.html") },
+    { group: "palette.pages", label: t("cmd.case.fg"), keys: "the first gym case study fitness zagazig classes whatsapp", run: goTo("case-firstgym.html") },
     { group: "palette.pages", label: t("cmd.about"), keys: "about bio story", run: goTo("about.html") },
     { group: "palette.pages", label: t("cmd.contact"), keys: "contact hire email message", run: goTo("contact.html") },
     { group: "palette.actions", label: t(theme === "light" ? "cord.on" : "cord.off"), keys: "lights theme dark light mode", run: () => setTheme(theme === "light" ? "dark" : "light") },

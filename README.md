@@ -7,7 +7,7 @@ A static site (HTML, CSS and plain JavaScript, no build step) with:
 
 - English and Arabic versions with a right-to-left layout (`i18n.js` holds the Arabic text)
 - A lamp-lit dark theme and a "lights on" light theme, switched by a pull cord
-- Case studies for WorkLedger, CineScope, TaskFlow and Rihla
+- Case studies for WorkLedger, CineScope, TaskFlow, Rihla and The First Gym
 - A Ctrl+K command menu, smooth scrolling and 3D scroll effects that respect reduced-motion settings
 
 ## Run locally
