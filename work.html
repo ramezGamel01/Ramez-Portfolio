@@ -146,7 +146,7 @@
           <span class="line"><span data-i18n="work.title1">Selected work</span></span>
           <span class="line muted"><span data-i18n="work.title2">Built, shipped and live.</span></span>
         </h1>
-        <p class="page-lead" data-reveal style="--d:2" data-i18n="work.lead">Four front ends, each with a case study: a time-tracking app, a film search you can browse by color, a task manager and a booking app with 3D scenes. Point at a screenshot and it scrolls through the page.</p>
+        <p class="page-lead" data-reveal style="--d:2" data-i18n="work.lead">Four front ends, each with a case study: a time-tracking app, a film search you can browse by color, a task manager and a booking app with 3D scenes.</p>
         <ul class="stats page-stats" data-reveal style="--d:3">
           <li><span class="stat-num">4</span><span class="stat-label" data-i18n="work.stat.1">Featured projects</span></li>
           <li><span class="stat-num">4</span><span class="stat-label" data-i18n="work.stat.2">Case studies</span></li>
@@ -156,100 +156,113 @@
       <a class="scroll-cue" href="#projects"><span class="scroll-line" aria-hidden="true"></span><span data-i18n="scroll">Scroll</span></a>
     </section>
 
-    <section class="section-tight" id="projects" aria-label="Featured projects">
+    <section class="deck-section" id="projects" aria-label="Featured projects" data-i18n-attr="aria-label:work.stat.1">
       <div class="container">
-        <div class="stack">
-          <article class="card card-ledger" style="--i:0" data-card>
-            <div class="card-info">
-              <h2 class="card-title">WorkLedger</h2>
+        <ul class="deck" data-deck>
+        <li class="deck-card" style="--tint:#5fb37a">
+          <a class="deck-media is-long" href="case-workledger.html" tabindex="-1" aria-hidden="true" style="--scroll-dur:7s">
+            <img src="assets/work/workledger-full.jpg" alt="" width="900" height="832" loading="lazy">
+          </a>
+          <div class="deck-body">
+            <p class="deck-index">01</p>
+            <h2 class="deck-title">WorkLedger</h2>
+            <p class="deck-tag" data-i18n="deck.wl">Time tracking and invoicing</p>
+            <div class="deck-details">
               <p class="card-stack" data-i18n="ledger.stack">React, TypeScript, Vite, IndexedDB</p>
               <p class="card-desc" data-i18n="ledger.desc">Time tracking and invoicing for hourly contractors. It records the work, keeps the proof next to the hours, calculates earnings and turns it all into invoices.</p>
               <ul class="ledger-features">
-                <li data-i18n="ledger.f1.t">Live and past work</li>
-                <li data-i18n="ledger.f2.t">Proof of work</li>
-                <li data-i18n="ledger.f3.t">Invoices and reports</li>
-                <li data-i18n="ledger.f4.t">Sync and backup</li>
+              <li data-i18n="ledger.f1.t">Live and past work</li>
+              <li data-i18n="ledger.f2.t">Proof of work</li>
+              <li data-i18n="ledger.f3.t">Invoices and reports</li>
+              <li data-i18n="ledger.f4.t">Sync and backup</li>
               </ul>
               <p class="card-links">
-                <a href="case-workledger.html"><span data-i18n="card.case">Case study</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-                <a href="https://ramezgamel01.github.io/workledger/"><span data-i18n="card.demo">Live demo</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-                <a href="https://github.com/ramezGamel01/workledger"><span data-i18n="card.code">Source code</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a href="case-workledger.html"><span data-i18n="card.case">Case study</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a href="https://ramezgamel01.github.io/workledger/"><span data-i18n="card.demo">Live demo</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a href="https://github.com/ramezGamel01/workledger"><span data-i18n="card.code">Source code</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
               </p>
             </div>
-            <a class="card-shot is-long" href="case-workledger.html" tabindex="-1" aria-hidden="true" style="--scroll-dur:7s">
-              <img src="assets/work/workledger-full.jpg" alt="" width="900" height="832" loading="lazy">
-            </a>
-          </article>
-
-          <article class="card" style="--i:1" data-card>
-            <div class="card-info">
-              <h2 class="card-title">CineScope</h2>
+          </div>
+        </li>
+        <li class="deck-card" style="--tint:#f4a24c">
+          <a class="deck-media is-long" href="case-cinescope.html" tabindex="-1" aria-hidden="true" style="--scroll-dur:6s">
+            <img src="assets/work/cinescope-full.jpg" alt="" width="900" height="1837" loading="lazy">
+          </a>
+          <div class="deck-body">
+            <p class="deck-index">02</p>
+            <h2 class="deck-title">CineScope</h2>
+            <p class="deck-tag" data-i18n="deck.cs">Find films by their colors</p>
+            <div class="deck-details">
               <p class="card-stack" data-i18n="cine.stack">React, TypeScript, three.js, Tailwind CSS</p>
               <p class="card-desc" data-i18n="cine.desc">Find films by their colors: a color wheel, photo matching, a 3D color universe built with three.js, and movie pages tinted by each film's palette.</p>
               <ul class="ledger-features">
-                <li data-i18n="cine.f1">Search by color</li>
-                <li data-i18n="cine.f2">Match a photo</li>
-                <li data-i18n="cine.f3">3D color universe</li>
-                <li data-i18n="cine.f4">Page transitions</li>
+              <li data-i18n="cine.f1">Search by color</li>
+              <li data-i18n="cine.f2">Match a photo</li>
+              <li data-i18n="cine.f3">3D color universe</li>
+              <li data-i18n="cine.f4">Page transitions</li>
               </ul>
               <p class="card-links">
-                <a href="case-cinescope.html"><span data-i18n="card.case">Case study</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-                <a href="https://cinescope-gamma-ruby.vercel.app"><span data-i18n="card.live">Live site</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-                <a href="https://github.com/ramezGamel01/CINESCOPE"><span data-i18n="card.code">Source code</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a href="case-cinescope.html"><span data-i18n="card.case">Case study</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a href="https://cinescope-gamma-ruby.vercel.app"><span data-i18n="card.live">Live site</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a href="https://github.com/ramezGamel01/CINESCOPE"><span data-i18n="card.code">Source code</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
               </p>
             </div>
-            <a class="card-shot is-long" href="case-cinescope.html" tabindex="-1" aria-hidden="true" style="--scroll-dur:5s">
-              <img src="assets/work/cinescope-full.jpg" alt="" width="900" height="1837" loading="lazy">
-            </a>
-          </article>
-
-          <article class="card" style="--i:2" data-card>
-            <div class="card-info">
-              <h2 class="card-title">TaskFlow</h2>
+          </div>
+        </li>
+        <li class="deck-card" style="--tint:#8b7cf6">
+          <a class="deck-media" href="case-taskflow.html" tabindex="-1" aria-hidden="true" style="--scroll-dur:4s">
+            <img src="assets/work/taskflow-full.jpg" alt="" width="900" height="562" loading="lazy">
+          </a>
+          <div class="deck-body">
+            <p class="deck-index">03</p>
+            <h2 class="deck-title">TaskFlow</h2>
+            <p class="deck-tag" data-i18n="deck.tf">Plan the day</p>
+            <div class="deck-details">
               <p class="card-stack" data-i18n="tf.stack">React, TypeScript, TanStack Start, Tailwind CSS</p>
               <p class="card-desc" data-i18n="tf.desc">A task manager for planning the day: a progress dashboard, views for today and completed work, filters, search, and light and dark themes. It works without an account.</p>
               <ul class="ledger-features">
-                <li data-i18n="tf.f1">Progress dashboard</li>
-                <li data-i18n="tf.f2">Filters and search</li>
-                <li data-i18n="tf.f3">Light and dark themes</li>
-                <li data-i18n="tf.f4">Saved in the browser</li>
+              <li data-i18n="tf.f1">Progress dashboard</li>
+              <li data-i18n="tf.f2">Filters and search</li>
+              <li data-i18n="tf.f3">Light and dark themes</li>
+              <li data-i18n="tf.f4">Saved in the browser</li>
               </ul>
               <p class="card-links">
-                <a href="case-taskflow.html"><span data-i18n="card.case">Case study</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-                <a href="https://task-flow-alpha-navy.vercel.app"><span data-i18n="card.live">Live site</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-                <a href="https://github.com/ramezGamel01/Task-Flow"><span data-i18n="card.code">Source code</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a href="case-taskflow.html"><span data-i18n="card.case">Case study</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a href="https://task-flow-alpha-navy.vercel.app"><span data-i18n="card.live">Live site</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a href="https://github.com/ramezGamel01/Task-Flow"><span data-i18n="card.code">Source code</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
               </p>
             </div>
-            <a class="card-shot" href="case-taskflow.html" tabindex="-1" aria-hidden="true">
-              <img src="assets/work/taskflow-full.jpg" alt="" width="900" height="562" loading="lazy">
-            </a>
-          </article>
-
-          <article class="card" style="--i:3" data-card>
-            <div class="card-info">
-              <h2 class="card-title">Rihla</h2>
+          </div>
+        </li>
+        <li class="deck-card" style="--tint:#ee7a52">
+          <a class="deck-media is-long" href="case-rihla.html" tabindex="-1" aria-hidden="true" style="--scroll-dur:9s">
+            <img src="assets/work/rihla-full.jpg" alt="" width="900" height="2950" loading="lazy">
+          </a>
+          <div class="deck-body">
+            <p class="deck-index">04</p>
+            <h2 class="deck-title">Rihla</h2>
+            <p class="deck-tag" data-i18n="deck.rh">Egypt by bus, in 3D</p>
+            <div class="deck-details">
               <p class="card-stack" data-i18n="rihla.stack">React, JavaScript, three.js</p>
               <p class="card-desc" data-i18n="rihla.desc">A bus booking app for travel around Egypt: a 3D desert hero, a journey map you drive by scrolling, seats you pick in 2D or 3D, checkout and QR tickets.</p>
               <ul class="ledger-features">
-                <li data-i18n="rihla.f1">three.js scenes</li>
-                <li data-i18n="rihla.f2">Seats in 2D or 3D</li>
-                <li data-i18n="rihla.f3">Checkout and QR tickets</li>
-                <li data-i18n="rihla.f4">English and Arabic</li>
+              <li data-i18n="rihla.f1">three.js scenes</li>
+              <li data-i18n="rihla.f2">Seats in 2D or 3D</li>
+              <li data-i18n="rihla.f3">Checkout and QR tickets</li>
+              <li data-i18n="rihla.f4">English and Arabic</li>
               </ul>
               <p class="card-links">
-                <a href="case-rihla.html"><span data-i18n="card.case">Case study</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-                <a href="https://ramezgamel01.github.io/rihla-egypt-travel/"><span data-i18n="card.live">Live site</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-                <a href="https://github.com/ramezGamel01/rihla-egypt-travel"><span data-i18n="card.code">Source code</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a href="case-rihla.html"><span data-i18n="card.case">Case study</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a href="https://ramezgamel01.github.io/rihla-egypt-travel/"><span data-i18n="card.live">Live site</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a href="https://github.com/ramezGamel01/rihla-egypt-travel"><span data-i18n="card.code">Source code</span><svg class="i-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
               </p>
             </div>
-            <a class="card-shot is-long" href="case-rihla.html" tabindex="-1" aria-hidden="true" style="--scroll-dur:9s">
-              <img src="assets/work/rihla-full.jpg" alt="" width="900" height="2950" loading="lazy">
-            </a>
-          </article>
-        </div>
+          </div>
+        </li>
+        </ul>
+        <p class="deck-hint" data-i18n="deck.hint">Point at a card to pull it from the deck.</p>
       </div>
     </section>
-
   </main>
 
   <footer class="site-footer">

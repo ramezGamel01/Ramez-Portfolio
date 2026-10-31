@@ -1018,6 +1018,84 @@
     el.textContent = new Date().getFullYear();
   });
 
+  /* ---------- Project deck (Work page) ----------
+     The projects sit fanned out like a hand of cards. Pointing at one, or tabbing
+     into it, lifts it out of the deck and opens its details; the others slide aside. */
+  const deck = $("[data-deck]");
+  if (deck) {
+    const deckCards = $$(".deck-card", deck);
+    const fanQuery = matchMedia("(min-width: 1024px) and (hover: hover)");
+    let active = -1;
+
+    function layoutDeck() {
+      const fanned = fanQuery.matches;
+      deck.classList.toggle("is-fanned", fanned);
+      deck.classList.toggle("has-active", fanned && active >= 0);
+      const n = deckCards.length;
+      const rtl = root.dir === "rtl" ? -1 : 1;
+      deckCards.forEach((card, i) => {
+        const slot = i - (n - 1) / 2;
+        card.classList.toggle("is-active", fanned && i === active);
+        if (!fanned) {
+          ["--x", "--y", "--r", "--s", "--z"].forEach((v) => card.style.removeProperty(v));
+          return;
+        }
+        let x = slot * 220;
+        let y = slot * slot * 12;
+        let r = slot * 6;
+        let s = 1;
+        let z = i + 1;
+        if (active >= 0) {
+          const d = i - active;
+          if (d === 0) {
+            // The lifted card moves toward the middle so its full width fits
+            x = slot * 140;
+            y = -26;
+            r = 0;
+            z = 20;
+          } else {
+            x += Math.sign(d) * 160;
+            y += 26;
+            r += Math.sign(d) * 5;
+            s = 0.9;
+            z = 10 - Math.abs(d);
+          }
+        }
+        card.style.setProperty("--x", `${(x * rtl).toFixed(1)}px`);
+        card.style.setProperty("--y", `${y.toFixed(1)}px`);
+        card.style.setProperty("--r", `${(r * rtl).toFixed(2)}deg`);
+        card.style.setProperty("--s", s);
+        card.style.setProperty("--z", z);
+      });
+    }
+
+    function setActive(i) {
+      if (active === i) return;
+      active = i;
+      layoutDeck();
+    }
+
+    deckCards.forEach((card, i) => {
+      card.addEventListener("pointerenter", (event) => {
+        if (fanQuery.matches && event.pointerType !== "touch") setActive(i);
+      });
+      card.addEventListener("focusin", () => setActive(i));
+    });
+    deck.addEventListener("pointerleave", () => fanQuery.matches && setActive(-1));
+    deck.addEventListener("focusout", (event) => {
+      if (!deck.contains(event.relatedTarget)) setActive(-1);
+    });
+    deck.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        setActive(-1);
+        document.activeElement?.blur();
+      }
+    });
+    fanQuery.addEventListener("change", layoutDeck);
+    document.addEventListener("langchange", layoutDeck);
+    layoutDeck();
+  }
+
   /* ---------- Scroll rail ----------
      A slim lamp-lit scrollbar with a mark for each section. It shows where you
      are while you scroll, and you can drag it or click anywhere along it. */
@@ -1163,7 +1241,7 @@
   function setCursorState(target) {
     const text = target.closest(TEXT);
     const hover = text ? null : target.closest(HOVER);
-    const view = hover?.matches(".card-shot");
+    const view = hover?.matches(".card-shot, .deck-media");
     cursor.el.classList.toggle("is-text", Boolean(text));
     cursor.el.classList.toggle("is-hover", Boolean(hover) && !view);
     cursor.el.classList.toggle("is-view", Boolean(view));
