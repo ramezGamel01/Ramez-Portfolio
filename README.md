@@ -1,7 +1,7 @@
 # Ramez Gamel — portfolio
 
 Personal site of Ramez Gamel, front-end developer in Egypt.
-Live at **https://ramezgamel01.github.io**.
+Live at **https://ramezgamel.vercel.app** (deployed on Vercel).
 
 A static site (HTML, CSS and plain JavaScript, no build step) with:
 
