@@ -539,12 +539,21 @@
   let lastY = window.scrollY;
   let velocity = 0;
   let stickyTops = [];
+  let movedAt = 0;
 
   function updateScroll() {
     const y = window.scrollY;
     const dy = y - lastY;
     lastY = y;
     velocity = lerp(velocity, dy, 0.25);
+
+    // Hovered project cards only rise out of the stack once the page is at rest
+    if (dy !== 0) {
+      movedAt = performance.now();
+      root.classList.add("is-scrolling");
+    } else if (root.classList.contains("is-scrolling") && performance.now() - movedAt > 180) {
+      root.classList.remove("is-scrolling");
+    }
 
     header.classList.toggle("is-solid", y > 40);
     if (!root.classList.contains("menu-open")) {

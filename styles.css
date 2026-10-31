@@ -1591,6 +1591,13 @@ html.lang-switching::view-transition-new(root) {
 }
 
 /* ---------- Work: cards stack and sink back in 3D ---------- */
+/* How far the hovered card has risen back out of the stack (0 to 1) */
+@property --raise {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
 .stack {
   display: grid;
   gap: 32px;
@@ -1611,11 +1618,12 @@ html.lang-switching::view-transition-new(root) {
   background: var(--bg-2);
   box-shadow: var(--card-shadow);
   transform-origin: 50% 0;
+  --sink: calc(var(--p, 0) * (1 - var(--raise)));
   transform:
     perspective(1400px)
-    translateY(calc(var(--p, 0) * -18px))
-    rotateX(calc(var(--p, 0) * 9deg))
-    scale(calc(1 - var(--p, 0) * 0.08));
+    translateY(calc(var(--sink) * -18px))
+    rotateX(calc(var(--sink) * 9deg))
+    scale(calc(1 - var(--sink) * 0.08));
 }
 
 /* Lamp light that follows the cursor inside a panel */
@@ -1643,6 +1651,12 @@ html.lang-switching::view-transition-new(root) {
   opacity: 1;
 }
 
+/* Tabbing into a covered card brings it to the front */
+.card:has(:focus-visible) {
+  z-index: 5;
+  --raise: 1;
+}
+
 /* Cards that have been covered fall into shadow */
 .card::after {
   content: "";
@@ -1652,13 +1666,17 @@ html.lang-switching::view-transition-new(root) {
   pointer-events: none;
   border-radius: inherit;
   background: var(--shade);
-  opacity: calc(var(--p, 0) * 0.6);
+  opacity: calc(var(--sink) * 0.6);
 }
 
-/* The card under the pointer lifts and takes on its project's colour; the rest dim */
+/* Once the page is at rest, the card under the pointer rises above the stack,
+   lifts and takes on its project's colour; the rest dim */
 .card {
   --tint: rgb(var(--lamp));
+  z-index: 0;
   transition:
+    --raise 0.45s var(--ease-out),
+    z-index 0s,
     translate 0.5s var(--ease-out),
     scale 0.5s var(--ease-out),
     border-color 0.4s,
@@ -1672,16 +1690,31 @@ html.lang-switching::view-transition-new(root) {
 
 @media (hover: hover) {
   .card:hover {
-    border-color: color-mix(in srgb, var(--tint) 50%, var(--line));
+    border-color: color-mix(in srgb, var(--tint) 60%, var(--line));
     box-shadow:
       var(--card-shadow),
-      0 0 0 1px color-mix(in srgb, var(--tint) 28%, transparent),
-      0 40px 90px -40px color-mix(in srgb, var(--tint) 60%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--tint) 35%, transparent),
+      0 30px 80px -30px color-mix(in srgb, var(--tint) 55%, transparent),
+      0 0 120px -20px color-mix(in srgb, var(--tint) 30%, transparent);
   }
 
-  [data-motion="on"] .card:hover {
-    translate: 0 -8px;
-    scale: 1.015;
+  /* A short pause first, so brushing past a card's edge doesn't pull it out */
+  html:not(.is-scrolling) .card:hover {
+    z-index: 5;
+    --raise: 1;
+    transition:
+      --raise 0.55s var(--ease-out) 0.12s,
+      z-index 0s 0.12s,
+      translate 0.5s var(--ease-out) 0.12s,
+      scale 0.5s var(--ease-out) 0.12s,
+      border-color 0.4s,
+      box-shadow 0.5s,
+      filter 0.5s;
+  }
+
+  [data-motion="on"]:not(.is-scrolling) .card:hover {
+    translate: 0 -10px;
+    scale: 1.02;
   }
 
   .card:hover .card-stack {
@@ -1689,11 +1722,11 @@ html.lang-switching::view-transition-new(root) {
   }
 
   .stack:has(.card:hover) .card:not(:hover) {
-    filter: brightness(0.55) saturate(0.6);
+    filter: brightness(0.45) saturate(0.5);
   }
 
   [data-theme="light"] .stack:has(.card:hover) .card:not(:hover) {
-    filter: saturate(0.4) brightness(0.93);
+    filter: saturate(0.35) brightness(0.9);
   }
 
   /* Darker tint on light paper so the stack line stays readable */
