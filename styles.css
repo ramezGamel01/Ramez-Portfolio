@@ -1655,6 +1655,53 @@ html.lang-switching::view-transition-new(root) {
   opacity: calc(var(--p, 0) * 0.6);
 }
 
+/* The card under the pointer lifts and takes on its project's colour; the rest dim */
+.card {
+  --tint: rgb(var(--lamp));
+  transition:
+    translate 0.5s var(--ease-out),
+    scale 0.5s var(--ease-out),
+    border-color 0.4s,
+    box-shadow 0.5s,
+    filter 0.5s;
+}
+
+.card-stack {
+  transition: color 0.4s;
+}
+
+@media (hover: hover) {
+  .card:hover {
+    border-color: color-mix(in srgb, var(--tint) 50%, var(--line));
+    box-shadow:
+      var(--card-shadow),
+      0 0 0 1px color-mix(in srgb, var(--tint) 28%, transparent),
+      0 40px 90px -40px color-mix(in srgb, var(--tint) 60%, transparent);
+  }
+
+  [data-motion="on"] .card:hover {
+    translate: 0 -8px;
+    scale: 1.015;
+  }
+
+  .card:hover .card-stack {
+    color: var(--tint);
+  }
+
+  .stack:has(.card:hover) .card:not(:hover) {
+    filter: brightness(0.55) saturate(0.6);
+  }
+
+  [data-theme="light"] .stack:has(.card:hover) .card:not(:hover) {
+    filter: saturate(0.4) brightness(0.93);
+  }
+
+  /* Darker tint on light paper so the stack line stays readable */
+  [data-theme="light"] .card:hover .card-stack {
+    color: color-mix(in srgb, var(--tint) 62%, #000);
+  }
+}
+
 .card-info {
   position: relative;
   z-index: 1;
