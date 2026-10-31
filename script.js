@@ -983,9 +983,221 @@
     el.textContent = new Date().getFullYear();
   });
 
+  /* ---------- Scroll rail ----------
+     A slim lamp-lit scrollbar with a mark for each section. It shows where you
+     are while you scroll, and you can drag it or click anywhere along it. */
+  const rail = (() => {
+    if (!finePointer.matches) return null;
+    const el = document.createElement("div");
+    el.className = "rail";
+    el.setAttribute("aria-hidden", "true");
+    el.innerHTML = '<div class="rail-track"></div><div class="rail-thumb"><span class="rail-label"></span></div>';
+    document.body.append(el);
+    root.classList.add("has-rail");
+    return {
+      el,
+      track: $(".rail-track", el),
+      thumb: $(".rail-thumb", el),
+      label: $(".rail-label", el),
+      marks: [],
+      activeUntil: 0,
+      dragging: null,
+      lastY: -1,
+      lastText: "",
+    };
+  })();
+
+  // Every visible page and section heading becomes a mark on the rail
+  function railHeadings() {
+    return $$("main h1, main h2").filter((heading) => heading.offsetParent !== null);
+  }
+
+  function railText(heading) {
+    const line = $(".line", heading) || heading;
+    const text = line.textContent.replace(/\s+/g, " ").trim();
+    return text.length > 30 ? `${text.slice(0, 29)}…` : text;
+  }
+
+  function measureRail() {
+    if (!rail) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    rail.el.hidden = max < 40;
+    rail.marks.forEach((m) => m.tick.remove());
+    rail.marks = railHeadings().map((heading) => {
+      const top = heading.getBoundingClientRect().top + window.scrollY;
+      const tick = document.createElement("span");
+      tick.className = "rail-tick";
+      tick.style.setProperty("--at", `${(clamp(top / Math.max(max, 1)) * 100).toFixed(2)}%`);
+      rail.track.append(tick);
+      return { heading, top, tick };
+    });
+    rail.lastY = -1;
+  }
+
+  function scrollToRatio(ratio, smooth) {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const y = clamp(ratio) * max;
+    if (lenis) lenis.scrollTo(y, smooth ? { duration: 1.1 } : { immediate: true });
+    else window.scrollTo({ top: y, behavior: smooth && motion ? "smooth" : "auto" });
+  }
+
+  function updateRail(now) {
+    if (!rail || rail.el.hidden) return;
+    const y = window.scrollY;
+    const vh = window.innerHeight;
+    const doc = document.documentElement.scrollHeight;
+    const max = Math.max(doc - vh, 1);
+    if (y !== rail.lastY) {
+      if (rail.lastY !== -1) rail.activeUntil = now + 1100;
+      rail.lastY = y;
+      const height = rail.el.clientHeight;
+      const thumb = Math.max(44, height * (vh / doc));
+      rail.thumb.style.setProperty("--h", `${thumb.toFixed(1)}px`);
+      rail.thumb.style.setProperty("--y", `${((height - thumb) * clamp(y / max)).toFixed(1)}px`);
+
+      let current = rail.marks[0];
+      rail.marks.forEach((m) => {
+        const passed = m.top <= y + vh * 0.4;
+        m.tick.classList.toggle("is-passed", passed);
+        if (passed) current = m;
+      });
+      const text = `${current ? escapeHTML(railText(current.heading)) : ""}<b>${Math.round(clamp(y / max) * 100)}%</b>`;
+      if (text !== rail.lastText) {
+        rail.label.innerHTML = text;
+        rail.lastText = text;
+      }
+    }
+    rail.el.classList.toggle("is-active", Boolean(rail.dragging) || now < rail.activeUntil);
+  }
+
+  if (rail) {
+    rail.el.addEventListener("pointerdown", (event) => {
+      const box = rail.el.getBoundingClientRect();
+      const thumb = rail.thumb.getBoundingClientRect();
+      event.preventDefault();
+      rail.el.setPointerCapture(event.pointerId);
+      rail.el.classList.add("is-dragging");
+      if (event.clientY >= thumb.top && event.clientY <= thumb.bottom) {
+        // Grab the thumb where it was clicked
+        rail.dragging = { offset: event.clientY - thumb.top, thumb: thumb.height, box };
+      } else {
+        // Jump to the clicked spot, then keep following the pointer
+        rail.dragging = { offset: thumb.height / 2, thumb: thumb.height, box };
+        scrollToRatio((event.clientY - box.top - thumb.height / 2) / (box.height - thumb.height), true);
+      }
+    });
+    rail.el.addEventListener("pointermove", (event) => {
+      if (!rail.dragging) return;
+      const { offset, thumb, box } = rail.dragging;
+      scrollToRatio((event.clientY - box.top - offset) / (box.height - thumb), false);
+    });
+    const endDrag = () => {
+      rail.dragging = null;
+      rail.el.classList.remove("is-dragging");
+    };
+    rail.el.addEventListener("pointerup", endDrag);
+    rail.el.addEventListener("pointercancel", endDrag);
+    document.addEventListener("langchange", () => {
+      rail.lastText = "";
+      rail.lastY = -1;
+    });
+  }
+
+  /* ---------- Cursor ----------
+     A dot, and targeting brackets that trail it. Over a link or button the
+     brackets lock onto the element's edges. Text fields keep the system cursor. */
+  const cursor = (() => {
+    if (!finePointer.matches || matchMedia("(forced-colors: active)").matches) return null;
+    const el = document.createElement("div");
+    el.className = "cursor";
+    el.setAttribute("aria-hidden", "true");
+    el.innerHTML =
+      '<span class="cursor-frame"><i></i><i></i><i></i><i></i></span><span class="cursor-dot"></span><span class="cursor-label"></span>';
+    document.body.append(el);
+    root.classList.add("has-cursor");
+    return {
+      el,
+      frame: $(".cursor-frame", el),
+      dot: $(".cursor-dot", el),
+      label: $(".cursor-label", el),
+      target: null,
+      x: -100,
+      y: -100,
+      w: 30,
+      h: 30,
+      angle: 0,
+    };
+  })();
+
+  const LOCK = "a, button, [role='button'], [role='tab'], [role='option'], label, summary, select, .palette-item, .rail";
+  const TEXT = "input:not([type='radio'], [type='checkbox'], [type='button'], [type='submit']), textarea, [contenteditable='true']";
+
+  if (cursor) {
+    document.addEventListener("pointerover", (event) => {
+      if (event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+      const text = event.target.closest(TEXT);
+      cursor.el.classList.toggle("is-text", Boolean(text));
+      cursor.target = text ? null : event.target.closest(LOCK);
+      const label = cursor.target?.matches(".card-shot") ? t("cursor.view") : "";
+      cursor.label.textContent = label;
+      cursor.el.classList.toggle("has-label", Boolean(label));
+    });
+    document.addEventListener("pointerdown", () => cursor.el.classList.add("is-pressed"));
+    document.addEventListener("pointerup", () => cursor.el.classList.remove("is-pressed"));
+    root.addEventListener("pointerleave", () => cursor.el.classList.remove("is-visible"));
+    root.addEventListener("pointerenter", () => cursor.el.classList.add("is-visible"));
+  }
+
+  function updateCursor(dt) {
+    if (!cursor || !pointer.moved || !finePointer.matches) return;
+    cursor.el.classList.add("is-visible");
+    const px = pointer.x;
+    const py = pointer.y;
+    cursor.dot.style.setProperty("--dx", `${px}px`);
+    cursor.dot.style.setProperty("--dy", `${py}px`);
+
+    let tx = px;
+    let ty = py;
+    let tw = 30;
+    let th = 30;
+    // Lock on while the element is still in the page and not the full width of it
+    const box = cursor.target?.isConnected ? cursor.target.getBoundingClientRect() : null;
+    const locked = Boolean(box && box.width > 0 && box.width < window.innerWidth * 0.95);
+    if (locked) {
+      const pad = cursor.target.matches(".rail") ? 4 : 7;
+      tw = box.width + pad * 2;
+      th = Math.min(box.height + pad * 2, window.innerHeight);
+      tx = box.left + box.width / 2;
+      ty = cursor.target.matches(".rail") ? py : box.top + box.height / 2;
+      if (cursor.target.matches(".rail")) th = 30;
+    }
+    cursor.el.classList.toggle("is-locked", locked);
+
+    const ease = motion ? 1 - Math.pow(0.0006, dt) : 1;
+    cursor.x = lerp(cursor.x, tx, ease);
+    cursor.y = lerp(cursor.y, ty, ease);
+    cursor.w = lerp(cursor.w, tw, ease);
+    cursor.h = lerp(cursor.h, th, ease);
+    // At rest the brackets turn slowly; locked on, they square up
+    const square = Math.round(cursor.angle / 90) * 90;
+    cursor.angle = locked || !motion ? lerp(cursor.angle, square, ease) : cursor.angle + dt * 45;
+
+    const f = cursor.frame.style;
+    f.setProperty("--fw", `${cursor.w.toFixed(1)}px`);
+    f.setProperty("--fh", `${cursor.h.toFixed(1)}px`);
+    f.setProperty("--fx", `${(cursor.x - cursor.w / 2).toFixed(1)}px`);
+    f.setProperty("--fy", `${(cursor.y - cursor.h / 2).toFixed(1)}px`);
+    f.setProperty("--fr", `${(cursor.angle % 360).toFixed(1)}deg`);
+    if (cursor.label.textContent) {
+      cursor.label.style.setProperty("--lx", `${px + 18}px`);
+      cursor.label.style.setProperty("--ly", `${py + 14}px`);
+    }
+  }
+
   /* ---------- Start ---------- */
   function measure() {
     stickyTops = cards.map((card) => parseFloat(getComputedStyle(card).top) || 0);
+    measureRail();
     if (track) marqueeHalf = track.scrollWidth / 2;
   }
 
@@ -999,6 +1211,8 @@
     updateScroll();
     updateLight(now / 1000);
     updateMarquee(dt);
+    updateRail(now);
+    updateCursor(dt);
 
     requestAnimationFrame(frame);
   }

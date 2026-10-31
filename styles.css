@@ -537,15 +537,14 @@ html.lang-switching::view-transition-new(root) {
   text-decoration: none;
 }
 
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: var(--fg);
-  color: var(--bg);
-  font: 600 21px/1 "Newsreader", Georgia, serif;
+/* The logo is a single-colour SVG used as a mask, so it takes the theme's ink */
+.brand-logo {
+  display: block;
+  height: 28px;
+  aspect-ratio: 1748 / 326;
+  background: currentColor;
+  -webkit-mask: url("assets/logo.svg") center / contain no-repeat;
+  mask: url("assets/logo.svg") center / contain no-repeat;
 }
 
 .nav-actions {
@@ -1318,8 +1317,10 @@ html.lang-switching::view-transition-new(root) {
   position: relative;
   aspect-ratio: 1;
   transform: translateY(calc(var(--p, 0) * -70px));
-  -webkit-mask-image: linear-gradient(180deg, #000 80%, transparent);
-  mask-image: linear-gradient(180deg, #000 80%, transparent);
+  /* Fade both edges: the bottom into the floor, and the top so the blurred
+     shadow never meets the box edge as a hard line */
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 7%, #000 80%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 7%, #000 80%, transparent);
 }
 
 .portrait img,
@@ -3089,8 +3090,8 @@ html.palette-open {
     display: none;
   }
 
-  .brand-name {
-    font-size: 16px;
+  .brand-logo {
+    height: 24px;
   }
 
   .stats {
@@ -3135,5 +3136,277 @@ html.palette-open {
 
   .motion-note {
     flex-wrap: wrap;
+  }
+}
+
+/* =========================================================
+   Scroll rail: a slim lamp-lit scrollbar with section marks.
+   Replaces the native bar on mouse and trackpad devices only.
+   ========================================================= */
+html.has-rail {
+  scrollbar-width: none;
+}
+
+html.has-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.rail {
+  position: fixed;
+  top: 12px;
+  bottom: 12px;
+  right: 0;
+  z-index: 90;
+  width: 22px;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.4s;
+}
+
+.rail:hover,
+.rail.is-active {
+  opacity: 1;
+}
+
+.rail[hidden],
+html.menu-open .rail,
+html.loading .rail,
+html.palette-open .rail {
+  display: none;
+}
+
+/* The track is a hairline that brightens around the thumb */
+.rail-track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 8px;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--line-2) 8%, var(--line-2) 92%, transparent);
+}
+
+.rail-tick {
+  position: absolute;
+  top: var(--at);
+  right: -2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: 0 0 0 1px var(--line-2);
+  transform: translateY(-50%);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.rail-tick.is-passed {
+  background: rgb(var(--lamp) / 0.9);
+  box-shadow: 0 0 0 1px rgb(var(--lamp) / 0.4), 0 0 8px rgb(var(--lamp) / 0.6);
+}
+
+.rail-thumb {
+  position: absolute;
+  top: 0;
+  right: 6px;
+  width: 5px;
+  height: var(--h, 60px);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgb(var(--lamp) / 0.55), rgb(var(--lamp)) 50%, rgb(var(--lamp) / 0.55));
+  box-shadow: 0 0 14px rgb(var(--lamp) / 0.45), 0 0 2px rgb(var(--lamp) / 0.9);
+  transform: translateY(var(--y, 0px));
+  transition: width 0.25s var(--ease-out), right 0.25s var(--ease-out);
+}
+
+.rail:hover .rail-thumb,
+.rail.is-dragging .rail-thumb {
+  right: 5px;
+  width: 7px;
+}
+
+/* Where you are: the section name and how far through the page */
+.rail-label {
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  padding: 6px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--fg);
+  font: 500 12px/1 var(--sans);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(6px, -50%);
+  transition: opacity 0.3s, transform 0.3s var(--ease-out);
+  pointer-events: none;
+}
+
+.rail-label b {
+  margin-inline-start: 8px;
+  color: var(--fg-3);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.rail.is-active .rail-label,
+.rail:hover .rail-label {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+[data-theme="light"] .rail-thumb {
+  background: var(--fg);
+  box-shadow: none;
+}
+
+[data-theme="light"] .rail-tick.is-passed {
+  background: var(--fg);
+  box-shadow: 0 0 0 1px var(--fg);
+}
+
+/* Smaller scroll areas inside the page */
+.palette-list,
+.menu {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--lamp) / 0.5) transparent;
+}
+
+[data-theme="light"] .palette-list,
+[data-theme="light"] .menu {
+  scrollbar-color: var(--fg-3) transparent;
+}
+
+/* =========================================================
+   Cursor: a dot and targeting brackets that lock onto
+   whatever you can click. Mouse and trackpad only.
+   ========================================================= */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
+
+html.has-cursor :is(input:not([type="radio"], [type="checkbox"], [type="button"], [type="submit"]), textarea, select, [contenteditable="true"]) {
+  cursor: auto !important;
+}
+
+.cursor {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  color: var(--fg);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.cursor.is-visible {
+  opacity: 1;
+}
+
+.cursor-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 10px rgb(var(--lamp) / 0.8);
+  translate: var(--dx, -100px) var(--dy, -100px);
+  scale: var(--ds, 1);
+  transition: scale 0.2s;
+}
+
+.cursor-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--fw, 30px);
+  height: var(--fh, 30px);
+  translate: var(--fx, -100px) var(--fy, -100px);
+  rotate: var(--fr, 0deg);
+  scale: var(--fs, 1);
+  transition: scale 0.2s;
+}
+
+.cursor-frame i {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border: 0 solid currentColor;
+  filter: drop-shadow(0 0 4px rgb(var(--lamp) / 0.55));
+}
+
+.cursor-frame i:nth-child(1) { top: 0; left: 0; border-top-width: 1.5px; border-left-width: 1.5px; }
+.cursor-frame i:nth-child(2) { top: 0; right: 0; border-top-width: 1.5px; border-right-width: 1.5px; }
+.cursor-frame i:nth-child(3) { bottom: 0; right: 0; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+.cursor-frame i:nth-child(4) { bottom: 0; left: 0; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+
+/* Locked onto a link or button: brighter corners, and the dot gives way */
+.cursor.is-locked .cursor-frame i {
+  width: 12px;
+  height: 12px;
+  border-width: 0;
+}
+
+.cursor.is-locked .cursor-frame i:nth-child(1) { border-top-width: 2px; border-left-width: 2px; }
+.cursor.is-locked .cursor-frame i:nth-child(2) { border-top-width: 2px; border-right-width: 2px; }
+.cursor.is-locked .cursor-frame i:nth-child(3) { border-bottom-width: 2px; border-right-width: 2px; }
+.cursor.is-locked .cursor-frame i:nth-child(4) { border-bottom-width: 2px; border-left-width: 2px; }
+
+.cursor.is-locked .cursor-dot {
+  --ds: 0.5;
+}
+
+.cursor.is-pressed .cursor-frame {
+  --fs: 0.92;
+}
+
+.cursor.is-pressed .cursor-dot {
+  --ds: 1.8;
+}
+
+/* Text fields keep the system text cursor */
+.cursor.is-text {
+  opacity: 0;
+}
+
+.cursor-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--fg);
+  color: var(--bg);
+  font: 600 11px/1 var(--sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  translate: var(--lx, -100px) var(--ly, -100px);
+  scale: 0.8;
+  transform-origin: 0 50%;
+  transition: opacity 0.2s, scale 0.2s;
+}
+
+.cursor.has-label .cursor-label {
+  opacity: 1;
+  scale: 1;
+}
+
+[data-theme="light"] .cursor-dot,
+[data-theme="light"] .cursor-frame i {
+  box-shadow: none;
+  filter: none;
+}
+
+@media (hover: none), (pointer: coarse), (forced-colors: active) {
+  .cursor,
+  .rail {
+    display: none;
   }
 }
