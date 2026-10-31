@@ -142,9 +142,10 @@
     });
   });
 
-  /* ---------- Switch sound (off unless the visitor turns it on) ----------
-     Synthesised, so there's no audio file: a short bright snap plus a low thump. */
-  let sound = store.get("sound") === "on";
+  /* ---------- Sounds (on until the visitor turns them off) ----------
+     Synthesised, so there are no audio files: switches make a bright snap with a
+     low thump, and every other click a soft tick. */
+  let sound = store.get("sound") !== "off";
   let audio = null;
 
   function switchClick() {
@@ -179,6 +180,40 @@
       thump.stop(now + 0.12);
     } catch {}
   }
+
+  function uiClick() {
+    if (!sound) return;
+    try {
+      audio ??= new (window.AudioContext || window.webkitAudioContext)();
+      if (audio.state === "suspended") audio.resume();
+      const now = audio.currentTime;
+      const tick = audio.createOscillator();
+      tick.type = "triangle";
+      tick.frequency.setValueAtTime(1900, now);
+      tick.frequency.exponentialRampToValueAtTime(650, now + 0.045);
+      const gain = audio.createGain();
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.09, now + 0.004);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+      tick.connect(gain).connect(audio.destination);
+      tick.start(now);
+      tick.stop(now + 0.07);
+    } catch {}
+  }
+
+  // Clicks tick on press, so the sound starts before a link opens the next page.
+  // Switches already make their own snap.
+  const CLICKABLE = "a, button, [role='button'], [role='tab'], [role='option'], label, summary, .palette-item";
+  const SWITCHES = "[data-theme-toggle], [data-cord], [data-sound-toggle]";
+  document.addEventListener("pointerdown", (event) => {
+    const el = event.target.closest(CLICKABLE);
+    if (el && event.button === 0 && !el.closest(SWITCHES)) uiClick();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const el = event.target.closest?.(CLICKABLE);
+    if (el && !el.closest(SWITCHES)) uiClick();
+  });
 
   function setSound(on) {
     sound = on;
@@ -1104,94 +1139,93 @@
   }
 
   /* ---------- Cursor ----------
-     A dot, and targeting brackets that trail it. Over a link or button the
-     brackets lock onto the element's edges. Text fields keep the system cursor. */
+     A small dot and a soft ring that trails it. Over links and buttons the ring
+     opens into a disc that inverts what's beneath it; over project screenshots a
+     "View" tag appears. Clicks send out a ripple. Text fields keep the system cursor. */
   const cursor = (() => {
     if (!finePointer.matches || matchMedia("(forced-colors: active)").matches) return null;
     const el = document.createElement("div");
     el.className = "cursor";
     el.setAttribute("aria-hidden", "true");
-    el.innerHTML =
-      '<span class="cursor-frame"><i></i><i></i><i></i><i></i></span><span class="cursor-dot"></span><span class="cursor-label"></span>';
-    document.body.append(el);
+    el.innerHTML = '<span class="cursor-ring"></span><span class="cursor-dot"></span>';
+    // The tag sits outside the blended layer so it always reads clearly
+    const tag = document.createElement("span");
+    tag.className = "cursor-tag";
+    tag.setAttribute("aria-hidden", "true");
+    document.body.append(el, tag);
     root.classList.add("has-cursor");
-    return {
-      el,
-      frame: $(".cursor-frame", el),
-      dot: $(".cursor-dot", el),
-      label: $(".cursor-label", el),
-      target: null,
-      x: -100,
-      y: -100,
-      w: 30,
-      h: 30,
-      angle: 0,
-    };
+    return { el, tag, ring: $(".cursor-ring", el), dot: $(".cursor-dot", el), x: -100, y: -100 };
   })();
 
-  const LOCK = "a, button, [role='button'], [role='tab'], [role='option'], label, summary, select, .palette-item, .rail";
+  const HOVER = "a, button, [role='button'], [role='tab'], [role='option'], label, summary, select, .palette-item, .rail";
   const TEXT = "input:not([type='radio'], [type='checkbox'], [type='button'], [type='submit']), textarea, [contenteditable='true']";
+
+  function setCursorState(target) {
+    const text = target.closest(TEXT);
+    const hover = text ? null : target.closest(HOVER);
+    const view = hover?.matches(".card-shot");
+    cursor.el.classList.toggle("is-text", Boolean(text));
+    cursor.el.classList.toggle("is-hover", Boolean(hover) && !view);
+    cursor.el.classList.toggle("is-view", Boolean(view));
+    cursor.tag.classList.toggle("is-on", Boolean(view));
+    if (view) cursor.tag.textContent = t("cursor.view");
+  }
 
   if (cursor) {
     document.addEventListener("pointerover", (event) => {
-      if (event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-      const text = event.target.closest(TEXT);
-      cursor.el.classList.toggle("is-text", Boolean(text));
-      cursor.target = text ? null : event.target.closest(LOCK);
-      const label = cursor.target?.matches(".card-shot") ? t("cursor.view") : "";
-      cursor.label.textContent = label;
-      cursor.el.classList.toggle("has-label", Boolean(label));
+      if (event.pointerType === "mouse" || event.pointerType === "pen") setCursorState(event.target);
     });
-    document.addEventListener("pointerdown", () => cursor.el.classList.add("is-pressed"));
+    document.addEventListener("pointerdown", (event) => {
+      cursor.el.classList.add("is-pressed");
+      if (!motion) return;
+      const ripple = document.createElement("span");
+      ripple.className = "cursor-ripple";
+      ripple.style.setProperty("--x", `${event.clientX}px`);
+      ripple.style.setProperty("--y", `${event.clientY}px`);
+      ripple.addEventListener("animationend", () => ripple.remove());
+      cursor.el.append(ripple);
+    });
     document.addEventListener("pointerup", () => cursor.el.classList.remove("is-pressed"));
-    root.addEventListener("pointerleave", () => cursor.el.classList.remove("is-visible"));
+    root.addEventListener("pointerleave", () => {
+      cursor.el.classList.remove("is-visible");
+      cursor.tag.classList.remove("is-on");
+    });
     root.addEventListener("pointerenter", () => cursor.el.classList.add("is-visible"));
   }
 
   function updateCursor(dt) {
     if (!cursor || !pointer.moved || !finePointer.matches) return;
     cursor.el.classList.add("is-visible");
-    const px = pointer.x;
-    const py = pointer.y;
-    cursor.dot.style.setProperty("--dx", `${px}px`);
-    cursor.dot.style.setProperty("--dy", `${py}px`);
+    const k = motion ? 1 - Math.pow(0.00002, dt) : 1;
+    cursor.x = lerp(cursor.x, pointer.x, k);
+    cursor.y = lerp(cursor.y, pointer.y, k);
+    cursor.dot.style.setProperty("--x", `${pointer.x}px`);
+    cursor.dot.style.setProperty("--y", `${pointer.y}px`);
+    cursor.ring.style.setProperty("--x", `${cursor.x.toFixed(1)}px`);
+    cursor.ring.style.setProperty("--y", `${cursor.y.toFixed(1)}px`);
+    cursor.tag.style.setProperty("--x", `${cursor.x.toFixed(1)}px`);
+    cursor.tag.style.setProperty("--y", `${cursor.y.toFixed(1)}px`);
+  }
 
-    let tx = px;
-    let ty = py;
-    let tw = 30;
-    let th = 30;
-    // Lock on while the element is still in the page and not the full width of it
-    const box = cursor.target?.isConnected ? cursor.target.getBoundingClientRect() : null;
-    const locked = Boolean(box && box.width > 0 && box.width < window.innerWidth * 0.95);
-    if (locked) {
-      const pad = cursor.target.matches(".rail") ? 4 : 7;
-      tw = box.width + pad * 2;
-      th = Math.min(box.height + pad * 2, window.innerHeight);
-      tx = box.left + box.width / 2;
-      ty = cursor.target.matches(".rail") ? py : box.top + box.height / 2;
-      if (cursor.target.matches(".rail")) th = 30;
-    }
-    cursor.el.classList.toggle("is-locked", locked);
-
-    const ease = motion ? 1 - Math.pow(0.0006, dt) : 1;
-    cursor.x = lerp(cursor.x, tx, ease);
-    cursor.y = lerp(cursor.y, ty, ease);
-    cursor.w = lerp(cursor.w, tw, ease);
-    cursor.h = lerp(cursor.h, th, ease);
-    // At rest the brackets turn slowly; locked on, they square up
-    const square = Math.round(cursor.angle / 90) * 90;
-    cursor.angle = locked || !motion ? lerp(cursor.angle, square, ease) : cursor.angle + dt * 45;
-
-    const f = cursor.frame.style;
-    f.setProperty("--fw", `${cursor.w.toFixed(1)}px`);
-    f.setProperty("--fh", `${cursor.h.toFixed(1)}px`);
-    f.setProperty("--fx", `${(cursor.x - cursor.w / 2).toFixed(1)}px`);
-    f.setProperty("--fy", `${(cursor.y - cursor.h / 2).toFixed(1)}px`);
-    f.setProperty("--fr", `${(cursor.angle % 360).toFixed(1)}deg`);
-    if (cursor.label.textContent) {
-      cursor.label.style.setProperty("--lx", `${px + 18}px`);
-      cursor.label.style.setProperty("--ly", `${py + 14}px`);
-    }
+  /* ---------- Magnetic buttons ----------
+     Buttons lean a few pixels toward the cursor while it's over them. */
+  if (finePointer.matches) {
+    $$(".btn, .lang-btn, .burger, .copy-btn").forEach((button) => {
+      button.addEventListener("pointermove", (event) => {
+        if (!motion) return;
+        const box = button.getBoundingClientRect();
+        const dx = (event.clientX - (box.left + box.width / 2)) / box.width;
+        const dy = (event.clientY - (box.top + box.height / 2)) / box.height;
+        button.style.setProperty("--mx-pull", `${(dx * 10).toFixed(1)}px`);
+        button.style.setProperty("--my-pull", `${(dy * 8).toFixed(1)}px`);
+        button.classList.add("is-pulled");
+      });
+      button.addEventListener("pointerleave", () => {
+        button.style.removeProperty("--mx-pull");
+        button.style.removeProperty("--my-pull");
+        button.classList.remove("is-pulled");
+      });
+    });
   }
 
   /* ---------- Start ---------- */

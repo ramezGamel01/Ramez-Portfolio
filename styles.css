@@ -3279,8 +3279,8 @@ html.palette-open .rail {
 }
 
 /* =========================================================
-   Cursor: a dot and targeting brackets that lock onto
-   whatever you can click. Mouse and trackpad only.
+   Cursor: a dot and a trailing ring, drawn in "difference"
+   so they invert whatever they pass over. Mouse and trackpad only.
    ========================================================= */
 html.has-cursor,
 html.has-cursor * {
@@ -3296,7 +3296,7 @@ html.has-cursor :is(input:not([type="radio"], [type="checkbox"], [type="button"]
   inset: 0;
   z-index: 200;
   pointer-events: none;
-  color: var(--fg);
+  mix-blend-mode: difference;
   opacity: 0;
   transition: opacity 0.25s;
 }
@@ -3305,107 +3305,134 @@ html.has-cursor :is(input:not([type="radio"], [type="checkbox"], [type="button"]
   opacity: 1;
 }
 
-.cursor-dot {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
-  border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 10px rgb(var(--lamp) / 0.8);
-  translate: var(--dx, -100px) var(--dy, -100px);
-  scale: var(--ds, 1);
-  transition: scale 0.2s;
-}
-
-.cursor-frame {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--fw, 30px);
-  height: var(--fh, 30px);
-  translate: var(--fx, -100px) var(--fy, -100px);
-  rotate: var(--fr, 0deg);
-  scale: var(--fs, 1);
-  transition: scale 0.2s;
-}
-
-.cursor-frame i {
-  position: absolute;
-  width: 9px;
-  height: 9px;
-  border: 0 solid currentColor;
-  filter: drop-shadow(0 0 4px rgb(var(--lamp) / 0.55));
-}
-
-.cursor-frame i:nth-child(1) { top: 0; left: 0; border-top-width: 1.5px; border-left-width: 1.5px; }
-.cursor-frame i:nth-child(2) { top: 0; right: 0; border-top-width: 1.5px; border-right-width: 1.5px; }
-.cursor-frame i:nth-child(3) { bottom: 0; right: 0; border-bottom-width: 1.5px; border-right-width: 1.5px; }
-.cursor-frame i:nth-child(4) { bottom: 0; left: 0; border-bottom-width: 1.5px; border-left-width: 1.5px; }
-
-/* Locked onto a link or button: brighter corners, and the dot gives way */
-.cursor.is-locked .cursor-frame i {
-  width: 12px;
-  height: 12px;
-  border-width: 0;
-}
-
-.cursor.is-locked .cursor-frame i:nth-child(1) { border-top-width: 2px; border-left-width: 2px; }
-.cursor.is-locked .cursor-frame i:nth-child(2) { border-top-width: 2px; border-right-width: 2px; }
-.cursor.is-locked .cursor-frame i:nth-child(3) { border-bottom-width: 2px; border-right-width: 2px; }
-.cursor.is-locked .cursor-frame i:nth-child(4) { border-bottom-width: 2px; border-left-width: 2px; }
-
-.cursor.is-locked .cursor-dot {
-  --ds: 0.5;
-}
-
-.cursor.is-pressed .cursor-frame {
-  --fs: 0.92;
-}
-
-.cursor.is-pressed .cursor-dot {
-  --ds: 1.8;
-}
-
-/* Text fields keep the system text cursor */
 .cursor.is-text {
   opacity: 0;
 }
 
-.cursor-label {
+.cursor-dot,
+.cursor-ring,
+.cursor-ripple,
+.cursor-tag {
   position: absolute;
   top: 0;
   left: 0;
-  padding: 5px 9px;
+  border-radius: 50%;
+  translate: var(--x, -100px) var(--y, -100px);
+  transform: translate(-50%, -50%);
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  transition: scale 0.25s var(--ease-out);
+}
+
+.cursor-ring {
+  width: 38px;
+  height: 38px;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  transition:
+    width 0.4s var(--ease-out),
+    height 0.4s var(--ease-out),
+    background-color 0.3s,
+    border-color 0.3s,
+    scale 0.2s var(--ease-out);
+}
+
+/* Over something clickable the ring opens into a solid disc */
+.cursor.is-hover .cursor-ring {
+  width: 64px;
+  height: 64px;
+  border-color: transparent;
+  background: #fff;
+}
+
+.cursor.is-hover .cursor-dot,
+.cursor.is-view .cursor-dot {
+  scale: 0;
+}
+
+.cursor.is-view .cursor-ring {
+  width: 96px;
+  height: 96px;
+  border-color: transparent;
+  background: #fff;
+}
+
+.cursor.is-pressed .cursor-ring {
+  scale: 0.86;
+}
+
+.cursor-ripple {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #fff;
+  animation: cursor-ripple 0.6s var(--ease-out) forwards;
+}
+
+@keyframes cursor-ripple {
+  from {
+    scale: 0.6;
+    opacity: 0.9;
+  }
+  to {
+    scale: 2.4;
+    opacity: 0;
+  }
+}
+
+/* "View" over project screenshots, outside the blended layer so it stays legible */
+.cursor-tag {
+  position: fixed;
+  z-index: 201;
+  padding: 7px 12px;
   border-radius: 999px;
   background: var(--fg);
   color: var(--bg);
-  font: 600 11px/1 var(--sans);
+  font: 600 12px/1 var(--sans);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
+  pointer-events: none;
   opacity: 0;
-  translate: var(--lx, -100px) var(--ly, -100px);
-  scale: 0.8;
-  transform-origin: 0 50%;
-  transition: opacity 0.2s, scale 0.2s;
+  scale: 0.6;
+  transition: opacity 0.25s, scale 0.35s var(--ease-out);
 }
 
-.cursor.has-label .cursor-label {
+.cursor-tag.is-on {
   opacity: 1;
   scale: 1;
 }
 
-[data-theme="light"] .cursor-dot,
-[data-theme="light"] .cursor-frame i {
-  box-shadow: none;
-  filter: none;
+/* Magnetic buttons: each keeps its own transitions, plus one for the pull */
+.btn,
+.lang-btn,
+.burger,
+.copy-btn {
+  translate: var(--mx-pull, 0) var(--my-pull, 0);
 }
 
+.btn {
+  transition:
+    background-color 0.35s var(--ease),
+    border-color 0.35s var(--ease),
+    color 0.35s var(--ease),
+    transform 0.35s var(--ease-out),
+    translate 0.35s var(--ease-out);
+}
+
+.lang-btn,
+.burger {
+  transition: background-color 0.3s, border-color 0.3s, translate 0.35s var(--ease-out);
+}
+
+.copy-btn {
+  transition: border-color 0.3s, translate 0.35s var(--ease-out);
+}
 @media (hover: none), (pointer: coarse), (forced-colors: active) {
   .cursor,
+  .cursor-tag,
   .rail {
     display: none;
   }
