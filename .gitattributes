@@ -1,0 +1,3 @@
+# Inline scripts are allowed in vercel.json by hash, so pages keep LF line endings everywhere
+*.html text eol=lf
+vercel.json text eol=lf
