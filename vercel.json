@@ -1,0 +1,19 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'sha256-yDgNdLmkGqFdJE+Pd669Y+5aI4TSQeNLEB0qyqh5WIw=' 'sha256-gVTI7iCAlqjglOYMjxW/lF6qbg/+t/UPFV1xhVD9N4E=' 'sha256-sS+eBNbS0wVa9hY/jl/5RmJjTw/HnrPFB9ol16doJDs='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+        },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" }
+      ]
+    }
+  ]
+}
