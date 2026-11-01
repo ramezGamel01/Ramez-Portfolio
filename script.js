@@ -610,8 +610,9 @@
 
   /* ---------- Work: project slider ----------
      The track scrolls sideways with snap points, so swiping is native. Mouse drag, the arrow keys,
-     the buttons and the steps move it too. It also moves on its own until the visitor takes over,
-     holding still while pointed at, focused, off screen or with animations off. */
+     the buttons and the steps move it too. It moves on its own once it's on screen and stops when
+     the visitor takes over, starting again the next time they scroll back to it. It holds still
+     while pointed at or focused, and never moves by itself with animations off. */
   const slider = $("[data-slider]");
   if (slider) {
     const lane = $("[data-slider-track]", slider);
@@ -619,7 +620,6 @@
     const steps = $$("[data-slider-step]", slider);
     const counter = $("[data-slider-now]", slider);
     const status = $("[data-slider-status]", slider);
-    const toggle = $("[data-slider-toggle]", slider);
     const names = slides.map((slide) => $(".card-title", slide).textContent);
     const holds = new Set();
     let active = -1;
@@ -636,9 +636,6 @@
     function render() {
       slider.classList.toggle("is-auto", playing());
       slider.classList.toggle("is-held", holds.size > 0);
-      toggle.hidden = !motion;
-      toggle.classList.toggle("is-playing", playing());
-      toggle.setAttribute("aria-label", t(playing() ? "slider.pause" : "slider.play"));
     }
 
     function label() {
@@ -732,10 +729,6 @@
         goTo(i);
       })
     );
-    toggle.addEventListener("click", () => {
-      auto = !playing();
-      render();
-    });
 
     slider.addEventListener("keydown", (event) => {
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
@@ -827,7 +820,14 @@
     lane.addEventListener("focusout", (event) => {
       if (!lane.contains(event.relatedTarget)) hold("focus", false);
     });
-    new IntersectionObserver(([entry]) => hold("away", !entry.isIntersecting), { threshold: 0.35 }).observe(lane);
+    // Coming back to the slider after scrolling away starts it moving again
+    new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && holds.has("away")) auto = true;
+        hold("away", !entry.isIntersecting);
+      },
+      { threshold: 0.35 }
+    ).observe(lane);
     document.addEventListener("visibilitychange", () => hold("hidden", document.hidden));
 
     // The active step's line fills over --auto; when it's full, the next project comes in

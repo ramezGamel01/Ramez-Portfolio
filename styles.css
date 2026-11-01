@@ -1665,16 +1665,6 @@ html.lang-switching::view-transition-new(root) {
   transform: scaleX(-1);
 }
 
-.slider-toggle .i-play,
-.slider-toggle.is-playing .i-pause {
-  display: block;
-}
-
-.slider-toggle .i-pause,
-.slider-toggle.is-playing .i-play {
-  display: none;
-}
-
 /* One step per project: its name over a line that fills while it's on screen */
 .slider-steps {
   grid-column: 1 / -1;
