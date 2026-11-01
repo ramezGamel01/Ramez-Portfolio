@@ -250,7 +250,7 @@
       startSmoothScroll();
     } else {
       stopSmoothScroll();
-      $$("[data-hero], [data-portrait], [data-rise], [data-card], [data-timeline]").forEach((el) =>
+      $$("[data-hero], [data-portrait], [data-rise], [data-timeline]").forEach((el) =>
         el.style.removeProperty("--p")
       );
       $$(".card-shot").forEach((shot) => {
@@ -529,7 +529,7 @@
     }
   }
 
-  /* ---------- Scroll: header, 3D hero, stacking cards, timeline, rising panel ---------- */
+  /* ---------- Scroll: header, 3D hero, timeline, rising panel ---------- */
   const hero = $("[data-hero]");
   const stage = $(".stage");
   const cards = $$("[data-card]");
@@ -538,22 +538,12 @@
   const timelineItems = timeline ? $$("li", timeline) : [];
   let lastY = window.scrollY;
   let velocity = 0;
-  let stickyTops = [];
-  let movedAt = 0;
 
   function updateScroll() {
     const y = window.scrollY;
     const dy = y - lastY;
     lastY = y;
     velocity = lerp(velocity, dy, 0.25);
-
-    // Hovered project cards only rise out of the stack once the page is at rest
-    if (dy !== 0) {
-      movedAt = performance.now();
-      root.classList.add("is-scrolling");
-    } else if (root.classList.contains("is-scrolling") && performance.now() - movedAt > 180) {
-      root.classList.remove("is-scrolling");
-    }
 
     header.classList.toggle("is-solid", y > 40);
     if (!root.classList.contains("menu-open")) {
@@ -573,13 +563,6 @@
     if (!motion) return;
 
     if (hero) hero.style.setProperty("--p", clamp(y / (stage.offsetHeight * 0.85)).toFixed(4));
-
-    cards.forEach((card, i) => {
-      const next = cards[i + 1];
-      if (!next) return;
-      const covered = 1 - (next.getBoundingClientRect().top - stickyTops[i]) / card.offsetHeight;
-      card.style.setProperty("--p", clamp(covered).toFixed(4));
-    });
 
     if (rise) {
       const box = rise.getBoundingClientRect();
@@ -624,6 +607,249 @@
     { threshold: 0.6 }
   );
   $$(".card-shot.is-long").forEach((shot) => previewWatcher.observe(shot));
+
+  /* ---------- Work: project slider ----------
+     The track scrolls sideways with snap points, so swiping is native. Mouse drag, the arrow keys,
+     the buttons and the steps move it too. It also moves on its own until the visitor takes over,
+     holding still while pointed at, focused, off screen or with animations off. */
+  const slider = $("[data-slider]");
+  if (slider) {
+    const lane = $("[data-slider-track]", slider);
+    const slides = $$("[data-slide]", lane);
+    const steps = $$("[data-slider-step]", slider);
+    const counter = $("[data-slider-now]", slider);
+    const status = $("[data-slider-status]", slider);
+    const toggle = $("[data-slider-toggle]", slider);
+    const names = slides.map((slide) => $(".card-title", slide).textContent);
+    const holds = new Set();
+    let active = -1;
+    let auto = true; // until the visitor takes over
+    let steering = false; // true while the slider moves itself
+    let intentAt = 0;
+    let pending = 0;
+    let drag = null;
+    let swallowClick = false;
+
+    const rtl = () => root.dir === "rtl";
+    const playing = () => auto && motion;
+
+    function render() {
+      slider.classList.toggle("is-auto", playing());
+      slider.classList.toggle("is-held", holds.size > 0);
+      toggle.hidden = !motion;
+      toggle.classList.toggle("is-playing", playing());
+      toggle.setAttribute("aria-label", t(playing() ? "slider.pause" : "slider.play"));
+    }
+
+    function label() {
+      slider.setAttribute("aria-roledescription", t("slider.role"));
+      slides.forEach((slide, i) => {
+        slide.setAttribute("aria-roledescription", t("slider.slideRole"));
+        slide.setAttribute("aria-label", t("slider.slide", { n: i + 1, total: slides.length }));
+      });
+      $("[data-slider-prev]", slider).setAttribute("aria-label", t("slider.prev"));
+      $("[data-slider-next]", slider).setAttribute("aria-label", t("slider.next"));
+      render();
+    }
+
+    function setActive(i, announce) {
+      if (i === active) return;
+      active = i;
+      slides.forEach((slide, n) => slide.classList.toggle("is-active", n === i));
+      steps.forEach((step, n) => {
+        step.classList.toggle("is-active", n === i);
+        step.setAttribute("aria-current", String(n === i));
+      });
+      counter.textContent = String(i + 1).padStart(2, "0");
+      // Only spoken when the visitor moved it, not on every automatic turn
+      if (announce) status.textContent = `${names[i]}, ${t("slider.slide", { n: i + 1, total: slides.length })}`;
+    }
+
+    // Each card's distance from the centre drives its size and shade, and the nearest one is active
+    function place() {
+      pending = 0;
+      const box = lane.getBoundingClientRect();
+      const centre = box.left + box.width / 2;
+      const step = slides[0].offsetWidth + parseFloat(getComputedStyle(lane).columnGap || 0);
+      let nearest = 0;
+      let best = Infinity;
+      slides.forEach((slide, i) => {
+        const s = slide.getBoundingClientRect();
+        const d = Math.abs(s.left + s.width / 2 - centre) / step;
+        slide.style.setProperty("--ad", Math.min(d, 1).toFixed(3));
+        if (d < best) {
+          best = d;
+          nearest = i;
+        }
+      });
+      setActive(nearest, !auto);
+    }
+
+    // Waits for a scroll to finish (scrollend where supported, a timer otherwise)
+    function settle(done, wait = 1200) {
+      let finished = false;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        lane.removeEventListener("scrollend", finish);
+        done();
+      };
+      lane.addEventListener("scrollend", finish);
+      setTimeout(finish, wait);
+    }
+
+    function goTo(i, smooth = motion) {
+      const n = (i + slides.length) % slides.length;
+      const box = lane.getBoundingClientRect();
+      const s = slides[n].getBoundingClientRect();
+      steering = true;
+      lane.classList.add("is-free");
+      lane.scrollBy({ left: s.left + s.width / 2 - (box.left + box.width / 2), behavior: smooth ? "smooth" : "instant" });
+      settle(() => {
+        steering = false;
+        if (!drag) lane.classList.remove("is-free");
+      });
+    }
+
+    function takeOver() {
+      if (!auto) return;
+      auto = false;
+      render();
+    }
+
+    // Visitor moves
+    $("[data-slider-prev]", slider).addEventListener("click", () => {
+      takeOver();
+      goTo(active - 1);
+    });
+    $("[data-slider-next]", slider).addEventListener("click", () => {
+      takeOver();
+      goTo(active + 1);
+    });
+    steps.forEach((step, i) =>
+      step.addEventListener("click", () => {
+        takeOver();
+        goTo(i);
+      })
+    );
+    toggle.addEventListener("click", () => {
+      auto = !playing();
+      render();
+    });
+
+    slider.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      if (event.target.closest(TEXT)) return;
+      event.preventDefault();
+      takeOver();
+      goTo(active + ((event.key === "ArrowRight") !== rtl() ? 1 : -1));
+    });
+
+    // A swipe or trackpad scroll the visitor started takes over; the slider's own moves don't
+    lane.addEventListener("scroll", () => {
+      pending ||= requestAnimationFrame(place);
+      if (!steering && performance.now() - intentAt < 1500) takeOver();
+    });
+    ["pointerdown", "wheel", "keydown"].forEach((type) =>
+      lane.addEventListener(type, () => (intentAt = performance.now()), { passive: true })
+    );
+    // Sideways trackpad scrolling stays with the slider instead of the smooth page scroll
+    lane.addEventListener("wheel", (event) => {
+      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) event.stopPropagation();
+    });
+
+    // Mouse drag: the track follows the pointer, then settles on the next card in that direction
+    lane.addEventListener("pointerdown", (event) => {
+      if (event.pointerType !== "mouse" || event.button !== 0) return;
+      drag = { x: event.clientX, left: lane.scrollLeft, from: active, id: event.pointerId, moved: false };
+    });
+    lane.addEventListener("pointermove", (event) => {
+      if (!drag) return;
+      const dx = event.clientX - drag.x;
+      if (!drag.moved) {
+        if (Math.abs(dx) < 6) return;
+        drag.moved = true;
+        takeOver();
+        lane.setPointerCapture(drag.id);
+        lane.classList.add("is-dragging", "is-free");
+      }
+      lane.scrollLeft = drag.left - dx;
+    });
+    const endDrag = (event) => {
+      if (!drag) return;
+      const { moved, x, from } = drag;
+      drag = null;
+      if (!moved) return;
+      swallowClick = true;
+      setTimeout(() => (swallowClick = false));
+      place();
+      const dx = event.clientX - x;
+      let target = active;
+      // Content follows the pointer, so dragging left brings in the card on the right
+      if (target === from && Math.abs(dx) > 50) target = from + ((dx < 0) !== rtl() ? 1 : -1);
+      lane.classList.remove("is-dragging");
+      goTo(Math.max(0, Math.min(slides.length - 1, target)));
+    };
+    lane.addEventListener("pointerup", endDrag);
+    lane.addEventListener("pointercancel", endDrag);
+    lane.addEventListener("dragstart", (event) => event.preventDefault());
+
+    // A click on a card to the side brings it to the centre instead of opening a link in it
+    lane.addEventListener(
+      "click",
+      (event) => {
+        const i = slides.indexOf(event.target.closest("[data-slide]"));
+        if (swallowClick || (i !== -1 && i !== active)) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        if (!swallowClick && i !== -1 && i !== active) {
+          takeOver();
+          goTo(i);
+        }
+      },
+      true
+    );
+
+    // Reasons to hold still for now
+    const hold = (reason, on) => {
+      if (on) holds.add(reason);
+      else holds.delete(reason);
+      render();
+    };
+    lane.addEventListener("pointerenter", (event) => event.pointerType === "mouse" && hold("hover", true));
+    lane.addEventListener("pointerleave", () => hold("hover", false));
+    lane.addEventListener("focusin", (event) => {
+      hold("focus", true);
+      const i = slides.indexOf(event.target.closest("[data-slide]"));
+      if (i !== -1 && i !== active) goTo(i);
+    });
+    lane.addEventListener("focusout", (event) => {
+      if (!lane.contains(event.relatedTarget)) hold("focus", false);
+    });
+    new IntersectionObserver(([entry]) => hold("away", !entry.isIntersecting), { threshold: 0.35 }).observe(lane);
+    document.addEventListener("visibilitychange", () => hold("hidden", document.hidden));
+
+    // The active step's line fills over --auto; when it's full, the next project comes in
+    slider.addEventListener("animationend", (event) => {
+      if (event.animationName === "slider-fill" && playing() && !holds.size) goTo(active + 1);
+    });
+
+    // Keep the same card centred when the layout or the reading direction changes
+    const recentre = () => {
+      goTo(Math.max(active, 0), false);
+      place();
+    };
+    window.addEventListener("resize", recentre);
+    document.addEventListener("langchange", () => {
+      label();
+      requestAnimationFrame(recentre);
+    });
+    document.addEventListener("motionchange", render);
+
+    label();
+    place();
+  }
 
   /* ---------- Tools slider ----------
      Always drifting; scrolling speeds it up and steers its direction. */
@@ -1054,7 +1280,8 @@
 
   // Every visible page and section heading becomes a mark on the rail
   function railHeadings() {
-    return $$("main h1, main h2").filter((heading) => heading.offsetParent !== null);
+    // Project titles in the slider all sit at one height, so they don't get marks of their own
+    return $$("main h1, main h2").filter((heading) => heading.offsetParent !== null && !heading.closest("[data-slider]"));
   }
 
   function railText(heading) {
@@ -1174,11 +1401,13 @@
     const text = target.closest(TEXT);
     const hover = text ? null : target.closest(HOVER);
     const view = hover?.matches(".card-shot");
+    // Anywhere else on the project slider, the cursor offers to drag it
+    const drag = !text && !hover && Boolean(target.closest("[data-slider-track]"));
     cursor.el.classList.toggle("is-text", Boolean(text));
     cursor.el.classList.toggle("is-hover", Boolean(hover) && !view);
-    cursor.el.classList.toggle("is-view", Boolean(view));
-    cursor.tag.classList.toggle("is-on", Boolean(view));
-    if (view) cursor.tag.textContent = t("cursor.view");
+    cursor.el.classList.toggle("is-view", Boolean(view) || drag);
+    cursor.tag.classList.toggle("is-on", Boolean(view) || drag);
+    if (view || drag) cursor.tag.textContent = t(view ? "cursor.view" : "cursor.drag");
   }
 
   if (cursor) {
@@ -1240,7 +1469,6 @@
 
   /* ---------- Start ---------- */
   function measure() {
-    stickyTops = cards.map((card) => parseFloat(getComputedStyle(card).top) || 0);
     measureRail();
     if (track) marqueeHalf = track.scrollWidth / 2;
   }

@@ -156,10 +156,31 @@
       <a class="scroll-cue" href="#projects"><span class="scroll-line" aria-hidden="true"></span><span data-i18n="scroll">Scroll</span></a>
     </section>
 
-    <section class="section-tight" id="projects" aria-label="Featured projects">
-      <div class="container">
-        <div class="stack">
-          <article class="card card-ledger" style="--i:0; --tint:#5fb37a" data-card>
+    <section class="section-tight work-slider" id="projects" aria-label="Featured projects" data-i18n-attr="aria-label:work.stat.1">
+      <div class="slider" data-slider aria-roledescription="carousel">
+        <div class="container">
+          <div class="slider-bar">
+            <p class="slider-count" aria-hidden="true"><span class="slider-now" data-slider-now>01</span><span class="slider-total">/ 05</span></p>
+            <div class="slider-buttons">
+              <button class="slider-btn slider-toggle" type="button" aria-label="Pause the slideshow" data-slider-toggle hidden>
+                <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 6v12M15.5 6v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9.2-5.8a.8.8 0 0 0 0-1.4L9.7 5.5a.8.8 0 0 0-1.2.7Z" fill="currentColor"/></svg>
+              </button>
+              <button class="slider-btn" type="button" aria-label="Previous project" data-slider-prev><svg class="i-dir" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button class="slider-btn" type="button" aria-label="Next project" data-slider-next><svg class="i-dir" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+            <div class="slider-steps" style="--n:5">
+              <button class="slider-step" type="button" style="--tint:#5fb37a" data-slider-step><span class="slider-label">WorkLedger</span><span class="slider-line" aria-hidden="true"><span class="slider-fill"></span></span></button>
+              <button class="slider-step" type="button" style="--tint:#f4a24c" data-slider-step><span class="slider-label">CineScope</span><span class="slider-line" aria-hidden="true"><span class="slider-fill"></span></span></button>
+              <button class="slider-step" type="button" style="--tint:#8b7cf6" data-slider-step><span class="slider-label">TaskFlow</span><span class="slider-line" aria-hidden="true"><span class="slider-fill"></span></span></button>
+              <button class="slider-step" type="button" style="--tint:#ee7a52" data-slider-step><span class="slider-label">Rihla</span><span class="slider-line" aria-hidden="true"><span class="slider-fill"></span></span></button>
+              <button class="slider-step" type="button" style="--tint:#ffc414" data-slider-step><span class="slider-label">The First Gym</span><span class="slider-line" aria-hidden="true"><span class="slider-fill"></span></span></button>
+            </div>
+          </div>
+          <p class="sr-only" aria-live="polite" data-slider-status></p>
+        </div>
+        <div class="slider-track" data-slider-track>
+          <article class="card slide card-ledger" style="--tint:#5fb37a" data-card data-slide role="group" aria-roledescription="slide" aria-label="1 of 5">
             <div class="card-info">
               <h2 class="card-title">WorkLedger</h2>
               <p class="card-stack" data-i18n="ledger.stack">React, TypeScript, Vite, IndexedDB</p>
@@ -180,8 +201,7 @@
               <img src="assets/work/workledger-full.jpg" alt="" width="900" height="832" loading="lazy">
             </a>
           </article>
-
-          <article class="card" style="--i:1; --tint:#f4a24c" data-card>
+          <article class="card slide" style="--tint:#f4a24c" data-card data-slide role="group" aria-roledescription="slide" aria-label="2 of 5">
             <div class="card-info">
               <h2 class="card-title">CineScope</h2>
               <p class="card-stack" data-i18n="cine.stack">React, TypeScript, three.js, Tailwind CSS</p>
@@ -202,8 +222,7 @@
               <img src="assets/work/cinescope-full.jpg" alt="" width="900" height="1837" loading="lazy">
             </a>
           </article>
-
-          <article class="card" style="--i:2; --tint:#8b7cf6" data-card>
+          <article class="card slide" style="--tint:#8b7cf6" data-card data-slide role="group" aria-roledescription="slide" aria-label="3 of 5">
             <div class="card-info">
               <h2 class="card-title">TaskFlow</h2>
               <p class="card-stack" data-i18n="tf.stack">React, JavaScript, three.js</p>
@@ -224,8 +243,7 @@
               <img src="assets/work/taskflow-full.jpg" alt="" width="900" height="562" loading="lazy">
             </a>
           </article>
-
-          <article class="card" style="--i:3; --tint:#ee7a52" data-card>
+          <article class="card slide" style="--tint:#ee7a52" data-card data-slide role="group" aria-roledescription="slide" aria-label="4 of 5">
             <div class="card-info">
               <h2 class="card-title">Rihla</h2>
               <p class="card-stack" data-i18n="rihla.stack">React, JavaScript, three.js</p>
@@ -246,8 +264,7 @@
               <img src="assets/work/rihla-full.jpg" alt="" width="900" height="2950" loading="lazy">
             </a>
           </article>
-
-          <article class="card" style="--i:4; --tint:#ffc414" data-card>
+          <article class="card slide" style="--tint:#ffc414" data-card data-slide role="group" aria-roledescription="slide" aria-label="5 of 5">
             <div class="card-info">
               <h2 class="card-title">The First Gym</h2>
               <p class="card-stack" data-i18n="gym.stack">React, JavaScript, three.js</p>

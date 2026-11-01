@@ -18,7 +18,7 @@
   --glass: rgba(24, 24, 27, 0.55);
   --toast-bg: rgba(28, 28, 31, 0.92);
   --shade: #000000;
-  --card-shadow: 0 -30px 60px -30px rgba(0, 0, 0, 0.8);
+  --card-shadow: 0 40px 90px -60px rgba(0, 0, 0, 0.8);
   --switch-off: rgba(255, 255, 255, 0.16);
 
   /* Warm lamp light, as RGB channels so alpha can vary */
@@ -66,7 +66,7 @@
   --glass: rgba(255, 255, 255, 0.6);
   --toast-bg: rgba(255, 255, 255, 0.94);
   --shade: #f1f1f3;
-  --card-shadow: 0 -30px 60px -30px rgba(18, 18, 20, 0.18);
+  --card-shadow: 0 40px 90px -60px rgba(18, 18, 20, 0.3);
   --switch-off: rgba(18, 18, 20, 0.16);
 
   --lamp: 255 255 255;
@@ -1590,40 +1590,213 @@ html.lang-switching::view-transition-new(root) {
   margin-bottom: 8px;
 }
 
-/* ---------- Work: cards stack and sink back in 3D ---------- */
-/* How far the hovered card has risen back out of the stack (0 to 1) */
-@property --raise {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 0;
+/* ---------- Work: project slider ----------
+   One project at a time, centred, with its neighbours peeking in and dimmed */
+.slider {
+  container-type: inline-size;
+  --auto: 7s;
 }
 
-.stack {
+.slider-bar {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 22px 32px;
+}
+
+.slider-count {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--serif);
+  line-height: 1;
+}
+
+.slider-now {
+  color: var(--fg);
+  font-size: clamp(2.6rem, 5vw, 4rem);
+  font-weight: 540;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.slider-total {
+  color: var(--fg-3);
+  font-size: 1.15rem;
+}
+
+.slider-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.slider-btn {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: var(--ghost);
+  color: var(--fg);
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s,
+    transform 0.4s var(--ease-out);
+}
+
+.slider-btn:hover {
+  border-color: var(--fg-3);
+  background: var(--ghost-hover);
+}
+
+.slider-btn:active {
+  transform: scale(0.94);
+}
+
+.slider-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Previous points right and next points left when the page runs right to left */
+[dir="rtl"] .slider-btn .i-dir {
+  transform: scaleX(-1);
+}
+
+.slider-toggle .i-play,
+.slider-toggle.is-playing .i-pause {
+  display: block;
+}
+
+.slider-toggle .i-pause,
+.slider-toggle.is-playing .i-play {
+  display: none;
+}
+
+/* One step per project: its name over a line that fills while it's on screen */
+.slider-steps {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr));
+  gap: 14px;
+}
+
+.slider-step {
+  display: grid;
+  gap: 12px;
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: var(--fg-3);
+  font: 500 14px/1.2 var(--sans);
+  text-align: start;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.slider-step:hover,
+.slider-step.is-active {
+  color: var(--fg);
+}
+
+.slider-line {
+  position: relative;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--line-2);
+}
+
+.slider-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--tint);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+[dir="rtl"] .slider-fill {
+  transform-origin: right;
+}
+
+.slider-step.is-active .slider-fill {
+  transform: none;
+}
+
+.slider.is-auto .slider-step.is-active .slider-fill {
+  animation: slider-fill var(--auto) linear both;
+}
+
+.slider.is-held .slider-step.is-active .slider-fill {
+  animation-play-state: paused;
+}
+
+@keyframes slider-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* The track scrolls sideways, so swiping works natively; room above and below keeps the hover glow */
+.slider-track {
+  --slide-w: min(1120px, 100cqi - 2 * var(--gutter) - 140px);
+  display: flex;
   gap: 32px;
+  padding: 36px calc((100cqi - var(--slide-w)) / 2) 80px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.slider-track::-webkit-scrollbar {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .slider-track {
+    cursor: grab;
+  }
+}
+
+/* Snapping is off while the slider steers itself or follows a drag, so it can pass several cards */
+.slider-track.is-free {
+  scroll-snap-type: none;
+}
+
+.slider-track.is-dragging {
+  cursor: grabbing;
+  user-select: none;
 }
 
 .card {
-  position: sticky;
-  top: calc(var(--header-h) + 16px + var(--i) * 16px);
+  position: relative;
+  flex: 0 0 var(--slide-w);
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
   gap: 56px;
   align-items: center;
-  min-height: min(600px, calc(100svh - var(--header-h) - 120px));
+  min-height: min(560px, calc(100svh - var(--header-h) - 280px));
   padding: clamp(24px, 4vw, 52px);
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 28px;
   background: var(--bg-2);
   box-shadow: var(--card-shadow);
-  transform-origin: 50% 0;
-  --sink: calc(var(--p, 0) * (1 - var(--raise)));
-  transform:
-    perspective(1400px)
-    translateY(calc(var(--sink) * -18px))
-    rotateX(calc(var(--sink) * 9deg))
-    scale(calc(1 - var(--sink) * 0.08));
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  /* --ad: how far this card sits from the centre, 0 to 1 */
+  transform: scale(calc(1 - var(--ad, 0) * var(--shrink, 0.08)));
+}
+
+.slide:not(.is-active) {
+  cursor: pointer;
+}
+
+[data-motion="off"] .card {
+  transform: none;
 }
 
 /* Lamp light that follows the cursor inside a panel */
@@ -1651,13 +1824,7 @@ html.lang-switching::view-transition-new(root) {
   opacity: 1;
 }
 
-/* Tabbing into a covered card brings it to the front */
-.card:has(:focus-visible) {
-  z-index: 5;
-  --raise: 1;
-}
-
-/* Cards that have been covered fall into shadow */
+/* Cards to the side of the centre fall into shadow */
 .card::after {
   content: "";
   position: absolute;
@@ -1666,22 +1833,16 @@ html.lang-switching::view-transition-new(root) {
   pointer-events: none;
   border-radius: inherit;
   background: var(--shade);
-  opacity: calc(var(--sink) * 0.6);
+  opacity: calc(var(--ad, 0) * 0.62);
 }
 
-/* Once the page is at rest, the card under the pointer rises above the stack,
-   lifts and takes on its project's colour; the rest dim */
+/* The card in the centre lifts under the pointer and takes on its project's colour */
 .card {
   --tint: rgb(var(--lamp));
-  z-index: 0;
   transition:
-    --raise 0.45s var(--ease-out),
-    z-index 0s,
     translate 0.5s var(--ease-out),
-    scale 0.5s var(--ease-out),
     border-color 0.4s,
-    box-shadow 0.5s,
-    filter 0.5s;
+    box-shadow 0.5s;
 }
 
 .card-stack {
@@ -1689,7 +1850,7 @@ html.lang-switching::view-transition-new(root) {
 }
 
 @media (hover: hover) {
-  .card:hover {
+  .card.is-active:hover {
     border-color: color-mix(in srgb, var(--tint) 60%, var(--line));
     box-shadow:
       var(--card-shadow),
@@ -1698,39 +1859,16 @@ html.lang-switching::view-transition-new(root) {
       0 0 120px -20px color-mix(in srgb, var(--tint) 30%, transparent);
   }
 
-  /* A short pause first, so brushing past a card's edge doesn't pull it out */
-  html:not(.is-scrolling) .card:hover {
-    z-index: 5;
-    --raise: 1;
-    transition:
-      --raise 0.55s var(--ease-out) 0.12s,
-      z-index 0s 0.12s,
-      translate 0.5s var(--ease-out) 0.12s,
-      scale 0.5s var(--ease-out) 0.12s,
-      border-color 0.4s,
-      box-shadow 0.5s,
-      filter 0.5s;
+  [data-motion="on"] .card.is-active:hover {
+    translate: 0 -8px;
   }
 
-  [data-motion="on"]:not(.is-scrolling) .card:hover {
-    translate: 0 -10px;
-    scale: 1.02;
-  }
-
-  .card:hover .card-stack {
+  .card.is-active:hover .card-stack {
     color: var(--tint);
   }
 
-  .stack:has(.card:hover) .card:not(:hover) {
-    filter: brightness(0.45) saturate(0.5);
-  }
-
-  [data-theme="light"] .stack:has(.card:hover) .card:not(:hover) {
-    filter: saturate(0.35) brightness(0.9);
-  }
-
   /* Darker tint on light paper so the stack line stays readable */
-  [data-theme="light"] .card:hover .card-stack {
+  [data-theme="light"] .card.is-active:hover .card-stack {
     color: color-mix(in srgb, var(--tint) 62%, #000);
   }
 }
@@ -3090,7 +3228,12 @@ html.palette-open {
     gap: 28px;
     align-items: start;
     min-height: 0;
-    top: calc(var(--header-h) + 12px + var(--i) * 10px);
+  }
+
+  .slider-track {
+    --slide-w: min(640px, 100cqi - 2 * var(--gutter) - 32px);
+    gap: 20px;
+    padding-block: 28px 56px;
   }
 
   .card-shot {
@@ -3192,6 +3335,37 @@ html.palette-open {
   .card {
     padding: 16px 16px 24px;
     border-radius: 22px;
+  }
+
+  /* Narrower slides and a smaller shrink, so the next card still peeks in */
+  .slider-track {
+    --slide-w: calc(100cqi - 2 * var(--gutter) - 40px);
+    --shrink: 0.03;
+    gap: 12px;
+  }
+
+  /* On a phone the steps are just lines (names kept for screen readers) */
+  .slider-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .slider-steps {
+    gap: 8px;
+  }
+
+  .slider-step {
+    position: relative;
+    padding-block: 11px;
+  }
+
+  .slider-btn {
+    width: 44px;
+    height: 44px;
   }
 
   .card-shot {
